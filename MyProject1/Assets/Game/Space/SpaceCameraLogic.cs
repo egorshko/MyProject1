@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Space
 {
-    public class SpaceCameraMoverLogic : BaseDisposable
+    public class SpaceCameraLogic : BaseDisposable
     {
         [Serializable]
         public struct Data
@@ -26,7 +26,7 @@ namespace Game.Space
 
         private Ctx _ctx;
 
-        public SpaceCameraMoverLogic(Ctx ctx)
+        public SpaceCameraLogic(Ctx ctx)
         {
             _ctx = ctx;
 

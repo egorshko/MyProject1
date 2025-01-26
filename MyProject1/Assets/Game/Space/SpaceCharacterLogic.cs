@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 namespace Game.Space 
 {
-    public class SpaceCharacterMoverLogic : BaseDisposable
+    public class SpaceCharacterLogic : BaseDisposable
     {
         [Serializable]
         public struct Data
@@ -27,6 +27,8 @@ namespace Game.Space
 
         public struct Ctx
         {
+            public IReactiveValue<Vector3> SpacePos;
+            public IReactiveValue<Quaternion> SpaceRot;
             public IReadOnlyReactiveCommand<float> OnUpdate;
             public Data Data;
             public IReadOnlyReactiveValue<bool> IsShowMenu;
@@ -41,7 +43,7 @@ namespace Game.Space
 
         private bool _onUnloading;
 
-        public SpaceCharacterMoverLogic(Ctx ctx)
+        public SpaceCharacterLogic(Ctx ctx)
         {
             const float doneDistance = 1f;
             const float cityDistance = 5f;
@@ -52,12 +54,8 @@ namespace Game.Space
 
             _onUnloading = false;
 
-            var textPlayerPos = PlayerPrefs.GetString(PlayerPosPrefsKey, JsonUtility.ToJson(_ctx.Data.PlayerGO.transform.position));
-            var playerPos = JsonUtility.FromJson<Vector3>(textPlayerPos);
-            var playerRot = PlayerPrefs.GetFloat(PlayerRotPrefsKey, 0f);
-
             var playerTr = _ctx.Data.PlayerGO.transform;
-            playerTr.SetPositionAndRotation(playerPos, Quaternion.Euler(Vector3.up * playerRot));
+            playerTr.SetPositionAndRotation(_ctx.SpacePos.Value, _ctx.SpaceRot.Value);
 
             foreach (var city in _ctx.Cities)
             {
@@ -123,8 +121,8 @@ namespace Game.Space
 
         protected override Task OnAsyncDispose()
         {
-            PlayerPrefs.SetString(PlayerPosPrefsKey, JsonUtility.ToJson(_ctx.Data.PlayerGO.transform.position));
-            PlayerPrefs.SetFloat(PlayerRotPrefsKey, _ctx.Data.PlayerGO.transform.eulerAngles.y);
+            _ctx.SpacePos.Value = _ctx.Data.PlayerGO.transform.position;
+            _ctx.SpaceRot.Value = _ctx.Data.PlayerGO.transform.rotation;
             return base.OnAsyncDispose();
         }
     }

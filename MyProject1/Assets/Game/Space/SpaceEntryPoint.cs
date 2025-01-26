@@ -10,17 +10,19 @@ namespace Game.Space
         [Serializable]
         public struct Data 
         {
-            [SerializeField] private SpaceCharacterMoverLogic.Data _playerData;
-            [SerializeField] private SpaceCameraMoverLogic.Data _cameraData;
+            [SerializeField] private SpaceCharacterLogic.Data _playerData;
+            [SerializeField] private SpaceCameraLogic.Data _cameraData;
             [SerializeField] private GameObject[] _cities;
 
-            public readonly SpaceCharacterMoverLogic.Data PlayerData => _playerData;
-            public readonly SpaceCameraMoverLogic.Data CameraData => _cameraData;
+            public readonly SpaceCharacterLogic.Data PlayerData => _playerData;
+            public readonly SpaceCameraLogic.Data CameraData => _cameraData;
             public readonly GameObject[] Cities => _cities;
         }
 
         public struct Ctx 
         {
+            public IReactiveValue<Vector3> SpacePos;
+            public IReactiveValue<Quaternion> SpaceRot;
             public IReadOnlyReactiveCommand<float> OnUpdate;
             public Action ShowMenu;
             public IReadOnlyReactiveValue<bool> IsShowMenu;
@@ -37,6 +39,8 @@ namespace Game.Space
 
             _ = new SpaceEntity(new SpaceEntity.Ctx 
             {
+                SpacePos = _ctx.SpacePos,
+                SpaceRot = _ctx.SpaceRot,
                 OnUpdate = _ctx.OnUpdate,
                 Data = _data,
                 ShowMenu = _ctx.ShowMenu,

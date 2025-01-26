@@ -9,6 +9,8 @@ namespace Game.Space
     {
         public struct Ctx
         {
+            public IReactiveValue<Vector3> SpacePos;
+            public IReactiveValue<Quaternion> SpaceRot;
             public IReadOnlyReactiveCommand<float> OnUpdate;
             public SpaceEntryPoint.Data Data;
             public Action ShowMenu;
@@ -28,15 +30,17 @@ namespace Game.Space
                 ShowMenu = _ctx.ShowMenu,
             }).AddTo(this);
 
-            _ = new SpaceCameraMoverLogic(new SpaceCameraMoverLogic.Ctx 
+            _ = new SpaceCameraLogic(new SpaceCameraLogic.Ctx 
             {
                 OnUpdate = _ctx.OnUpdate,
                 PlayerTransform = _ctx.Data.PlayerData.PlayerGO.transform,
                 Data = _ctx.Data.CameraData,
             }).AddTo(this);
 
-            _ = new SpaceCharacterMoverLogic(new SpaceCharacterMoverLogic.Ctx
+            _ = new SpaceCharacterLogic(new SpaceCharacterLogic.Ctx
             {
+                SpacePos = _ctx.SpacePos,
+                SpaceRot = _ctx.SpaceRot,
                 OnUpdate = _ctx.OnUpdate,
                 Data = _ctx.Data.PlayerData,
                 IsShowMenu = _ctx.IsShowMenu,

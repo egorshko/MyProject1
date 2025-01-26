@@ -23,6 +23,9 @@ namespace Game
             public Func<string, Task> UnloadScene;
         }
 
+        private const string SpaceName = "Space";
+        private const string CityName = "City";
+
         private readonly Ctx _ctx;
 
         public GameLogic(Ctx ctx)
@@ -50,43 +53,30 @@ namespace Game
 
         public async Task<SpaceEntryPoint> GetSpace(SpaceEntryPoint.Ctx ctx)
         {
-            const string spaceName = "Space";
-            var spaceEntryPoint = await _ctx.GetSpace.Invoke(spaceName);
+            var spaceEntryPoint = await _ctx.GetSpace.Invoke(SpaceName);
             spaceEntryPoint.Init(ctx);
-            new DisposeObserver(async () => await UnloadScene(spaceName)).AddTo(this);
+            new DisposeObserver(async () => await UnloadScene(SpaceName)).AddTo(this);
             return spaceEntryPoint;
         }
 
-        private async Task UnloadSpace() 
-        {
-            const string spaceName = "Space";
-            await UnloadScene(spaceName);
-        }
+        private async Task UnloadSpace() => await UnloadScene(SpaceName);
 
         public async Task<CityEntryPoint> GetCity(CityEntryPoint.Ctx ctx)
         {
-            const string cityName = "City";
-            var cityEntryPoint = await _ctx.GetCity.Invoke(cityName);
+            var cityEntryPoint = await _ctx.GetCity.Invoke(CityName);
             cityEntryPoint.Init(ctx);
-            new DisposeObserver(async () => await UnloadScene(cityName)).AddTo(this);
+            new DisposeObserver(async () => await UnloadScene(CityName)).AddTo(this);
             return cityEntryPoint;
         }
 
-        private async Task UnloadCity()
-        {
-            const string cityName = "City";
-            await UnloadScene(cityName);
-        }
+        private async Task UnloadCity() => await UnloadScene(CityName);
+
+        private async Task UnloadScene(string sceneName) => await _ctx.UnloadScene(sceneName);
 
         public async Task UnloadAll()
         {
             await UnloadSpace();
             await UnloadCity();
-        }
-
-        private async Task UnloadScene(string sceneName) 
-        {
-            await _ctx.UnloadScene(sceneName);
         }
     }
 }

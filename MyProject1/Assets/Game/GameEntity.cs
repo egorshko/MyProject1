@@ -19,7 +19,9 @@ namespace Game
 
         private readonly Ctx _ctx;
 
-        IReactiveValue<bool> _isShowMenu;
+        private IReactiveValue<bool> _isShowMenu;
+        private IReactiveValue<Vector3> _spacePos;
+        private IReactiveValue<Quaternion> _spaceRot;
 
         private GameLogic _gameLogic;
 
@@ -33,6 +35,10 @@ namespace Game
             _ctx = ctx;
 
             _isShowMenu = new ReactiveValue<bool>(false).AddTo(this);
+
+            //TODO load spacePos and spaceRot here...
+            _spacePos = new ReactiveValue<Vector3>().AddTo(this);
+            _spaceRot = new ReactiveValue<Quaternion>().AddTo(this);
 
             _gameLogic = new GameLogic(new GameLogic.Ctx 
             {
@@ -96,6 +102,8 @@ namespace Game
             await _gameLogic.UnloadAll();
             _ = await _gameLogic.GetSpace(new SpaceEntryPoint.Ctx
             {
+                SpacePos = _spacePos,
+                SpaceRot = _spaceRot,
                 OnUpdate = _ctx.OnUpdate,
                 ShowMenu = ShowSpaceMenu,
                 IsShowMenu = _isShowMenu,

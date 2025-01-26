@@ -10,7 +10,11 @@ namespace Game.City
         [Serializable]
         public struct Data
         {
+            [SerializeField] private CityCameraLogic.Data _cameraData;
+            [SerializeField] private CityBuildLogic.Data _buildData;
 
+            public readonly CityCameraLogic.Data CameraData => _cameraData;
+            public readonly CityBuildLogic.Data BuildData => _buildData;
         }
 
         public struct Ctx
@@ -27,9 +31,11 @@ namespace Game.City
         {
             _ctx = ctx;
 
-            _ctx.OnUpdate.Subscribe(deltaTime =>
+            _ = new CityEntity(new CityEntity.Ctx
             {
-                if (Input.GetKeyUp(KeyCode.Escape)) _ctx.ToSpace.Invoke();
+                OnUpdate = _ctx.OnUpdate,
+                Data = _data,
+                ToSpace = _ctx.ToSpace,
             }).AddTo(this);
         }
     }
