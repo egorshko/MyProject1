@@ -36,9 +36,6 @@ namespace Game.Space
             public Action<GameObject> LoadCity;
         }
 
-        private const string PlayerPosPrefsKey = "SpacePlayerPos";
-        private const string PlayerRotPrefsKey = "SpacePlayerRot";
-
         private Ctx _ctx;
 
         private bool _onUnloading;
