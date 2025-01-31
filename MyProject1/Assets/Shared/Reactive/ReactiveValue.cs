@@ -1,6 +1,6 @@
+using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using System;
-using System.Threading.Tasks;
 
 namespace Shared.Reactive 
 {
@@ -39,14 +39,14 @@ namespace Shared.Reactive
             return new DisposeObserver(() => 
             {
                 _onChange -= onChange;
-                return Task.CompletedTask;
+                return UniTask.CompletedTask;
             });
         }
 
-        public async Task AsyncDispose() 
+        public async UniTask AsyncDispose() 
         { 
             _onChange = null;
-            await Task.CompletedTask;
+            await UniTask.CompletedTask;
         }
     }
 }

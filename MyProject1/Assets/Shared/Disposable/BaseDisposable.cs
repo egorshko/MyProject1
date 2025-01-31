@@ -1,6 +1,5 @@
-using Game;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Shared.Disposable 
@@ -23,7 +22,7 @@ namespace Shared.Disposable
     {
         private readonly Stack<ITaskDisposable> _disposables = new ();
 
-        public async Task AsyncDispose()
+        public async UniTask AsyncDispose()
         {
             while (_disposables.Count > 0)
                 await _disposables.Pop().AsyncDispose();
@@ -32,7 +31,7 @@ namespace Shared.Disposable
 
         public void AddDisposable(ITaskDisposable disposable) => _disposables.Push(disposable);
 
-        protected virtual async Task OnAsyncDispose() => await Task.CompletedTask;
+        protected virtual async UniTask OnAsyncDispose() => await UniTask.CompletedTask;
     }
 
     public abstract class BaseDisposableMB : MonoBehaviour, ITaskDisposable, IBaseDisposable
@@ -41,7 +40,7 @@ namespace Shared.Disposable
 
         protected virtual async void OnDisable() => await AsyncDispose();
 
-        public async Task AsyncDispose()
+        public async UniTask AsyncDispose()
         {
             while (_disposables.Count > 0)
                 await _disposables.Pop().AsyncDispose();
@@ -50,7 +49,7 @@ namespace Shared.Disposable
 
         public void AddDisposable(ITaskDisposable disposable) => _disposables.Push(disposable);
 
-        protected virtual async Task OnAsyncDispose() => await Task.CompletedTask;
+        protected virtual async UniTask OnAsyncDispose() => await UniTask.CompletedTask;
     }
 }
 

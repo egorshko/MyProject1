@@ -1,7 +1,9 @@
+using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
 using UnityEngine;
+using UnityEngine.LowLevel;
 
 namespace Game 
 {
@@ -19,6 +21,9 @@ namespace Game
 
         private void OnEnable()
         {
+            var playerLoop = PlayerLoop.GetCurrentPlayerLoop();
+            PlayerLoopHelper.Initialize(ref playerLoop);
+
             _onUpdate = new ReactiveCommand<float>().AddTo(this);
             _ = new GameEntity(new GameEntity.Ctx
             {

@@ -1,7 +1,7 @@
+using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -51,8 +51,6 @@ namespace Game.City
             public Data Data;
         }
 
-        private const int FirstWait = 100;
-
         private Ctx _ctx;
 
         public CityBuildLogic(Ctx ctx)
@@ -97,7 +95,7 @@ namespace Game.City
 
         private async void AsyncInit() 
         {
-            await Task.Delay(FirstWait);
+            await UniTask.Delay(50, true);
 
             _ctx.CurrentCameraPos.Value = _ctx.Data.Builds[0].CamPoint.position;
             _ctx.CurrentCameraRot.Value = _ctx.Data.Builds[0].CamPoint.rotation;

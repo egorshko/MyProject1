@@ -1,7 +1,7 @@
+using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -116,7 +116,7 @@ namespace Game.Space
             }
         }
 
-        protected override Task OnAsyncDispose()
+        protected override UniTask OnAsyncDispose()
         {
             _ctx.SpacePos.Value = _ctx.Data.PlayerGO.transform.position;
             _ctx.SpaceRot.Value = _ctx.Data.PlayerGO.transform.rotation;

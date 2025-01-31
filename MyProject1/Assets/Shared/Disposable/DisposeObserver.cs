@@ -1,18 +1,18 @@
+using Cysharp.Threading.Tasks;
 using System;
-using System.Threading.Tasks;
 
 namespace Shared.Disposable
 {
     public class DisposeObserver : ITaskDisposable
     {
-        private Func<Task> _onDispose;
+        private Func<UniTask> _onDispose;
 
-        public DisposeObserver(Func<Task> onDispose)
+        public DisposeObserver(Func<UniTask> onDispose)
         {
             _onDispose = onDispose;
         }
 
-        public async Task AsyncDispose()
+        public async UniTask AsyncDispose()
         {
             await _onDispose.Invoke();
         }

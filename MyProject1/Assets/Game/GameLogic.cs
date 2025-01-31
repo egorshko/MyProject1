@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Game.City;
 using Game.LoadingScreen;
 using Game.MenuScreen;
@@ -5,7 +6,6 @@ using Game.Space;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Game 
@@ -16,11 +16,11 @@ namespace Game
         {
             public IReadOnlyReactiveCommand<float> OnUpdate;
 
-            public Func<string, Task<LoadingScreenEntryPoint>> GetLoadingScreen;
-            public Func<string, Task<MenuScreenEntryPoint>> GetMenuScreen;
-            public Func<string, Task<SpaceEntryPoint>> GetSpace;
-            public Func<string, Task<CityEntryPoint>> GetCity;
-            public Func<string, Task> UnloadScene;
+            public Func<string, UniTask<LoadingScreenEntryPoint>> GetLoadingScreen;
+            public Func<string, UniTask<MenuScreenEntryPoint>> GetMenuScreen;
+            public Func<string, UniTask<SpaceEntryPoint>> GetSpace;
+            public Func<string, UniTask<CityEntryPoint>> GetCity;
+            public Func<string, UniTask> UnloadScene;
         }
 
         private const string SpaceName = "Space";
@@ -33,7 +33,7 @@ namespace Game
             _ctx = ctx;
         }
 
-        public async Task<LoadingScreenEntryPoint> GetLoadingScreen(LoadingScreenEntryPoint.Ctx ctx)
+        public async UniTask<LoadingScreenEntryPoint> GetLoadingScreen(LoadingScreenEntryPoint.Ctx ctx)
         {
             const string loadingScreenName = "LoadingScreen";
             var loadingScreenEntryPoint = await _ctx.GetLoadingScreen.Invoke(loadingScreenName);
@@ -42,7 +42,7 @@ namespace Game
             return loadingScreenEntryPoint;
         }
 
-        public async Task<MenuScreenEntryPoint> GetMenuScreen(MenuScreenEntryPoint.Ctx ctx)
+        public async UniTask<MenuScreenEntryPoint> GetMenuScreen(MenuScreenEntryPoint.Ctx ctx)
         {
             const string menuScreenName = "MenuScreen";
             var menuScreenEntryPoint = await _ctx.GetMenuScreen.Invoke(menuScreenName);
@@ -51,7 +51,7 @@ namespace Game
             return menuScreenEntryPoint;
         }
 
-        public async Task<SpaceEntryPoint> GetSpace(SpaceEntryPoint.Ctx ctx)
+        public async UniTask<SpaceEntryPoint> GetSpace(SpaceEntryPoint.Ctx ctx)
         {
             var spaceEntryPoint = await _ctx.GetSpace.Invoke(SpaceName);
             spaceEntryPoint.Init(ctx);
@@ -59,9 +59,9 @@ namespace Game
             return spaceEntryPoint;
         }
 
-        private async Task UnloadSpace() => await UnloadScene(SpaceName);
+        private async UniTask UnloadSpace() => await UnloadScene(SpaceName);
 
-        public async Task<CityEntryPoint> GetCity(CityEntryPoint.Ctx ctx)
+        public async UniTask<CityEntryPoint> GetCity(CityEntryPoint.Ctx ctx)
         {
             var cityEntryPoint = await _ctx.GetCity.Invoke(CityName);
             cityEntryPoint.Init(ctx);
@@ -69,11 +69,11 @@ namespace Game
             return cityEntryPoint;
         }
 
-        private async Task UnloadCity() => await UnloadScene(CityName);
+        private async UniTask UnloadCity() => await UnloadScene(CityName);
 
-        private async Task UnloadScene(string sceneName) => await _ctx.UnloadScene(sceneName);
+        private async UniTask UnloadScene(string sceneName) => await _ctx.UnloadScene(sceneName);
 
-        public async Task UnloadAll()
+        public async UniTask UnloadAll()
         {
             await UnloadSpace();
             await UnloadCity();

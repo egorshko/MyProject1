@@ -74,17 +74,13 @@ namespace Game
             {
                 OnUpdate = _ctx.OnUpdate,
             });
-
             _loadingScreen.ShowImmediate();
-
             _menuScreen = await _gameLogic.GetMenuScreen(new MenuScreenEntryPoint.Ctx
             {
                 OnUpdate = _ctx.OnUpdate,
                 IsShowMenu = _isShowMenu,
             });
-
             SetMainMenuButtons();
-
             await _loadingScreen.Hide();
         }
 
@@ -100,6 +96,9 @@ namespace Game
         {
             await _loadingScreen.Show();
             await _gameLogic.UnloadAll();
+
+            //TODO load _spacePos and _spaceRot here...
+
             _ = await _gameLogic.GetSpace(new SpaceEntryPoint.Ctx
             {
                 SpacePos = _spacePos,

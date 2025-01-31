@@ -1,10 +1,10 @@
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 namespace Shared.Disposable
 {
     public interface ITaskDisposable
     {
-        public Task AsyncDispose();
+        public UniTask AsyncDispose();
     }
 }
 

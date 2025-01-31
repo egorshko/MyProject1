@@ -1,7 +1,8 @@
+using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
-using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.LowLevel;
 using UnityEngine.SceneManagement;
 
 namespace Game.SceneLoading 
@@ -17,8 +18,6 @@ namespace Game.SceneLoading
             public IReactiveCommand<string> OnSceneUnloadingDone;
         }
 
-        private const int AwaitTicks = 100;
-
         private readonly Ctx _ctx;
 
         public SceneLoadingLogic(Ctx ctx)
@@ -26,12 +25,12 @@ namespace Game.SceneLoading
             _ctx = ctx;
         }
 
-        public async Task<T> LoadScene<T>(string sceneName) where T : MonoBehaviour
+        public async UniTask<T> LoadScene<T>(string sceneName) where T : MonoBehaviour
         {
             var sceneLoading = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             while (sceneLoading != null && !sceneLoading.isDone)
             {
-                await Task.Delay(AwaitTicks);
+                await UniTask.Delay(50, true);
                 _ctx.OnSceneLoading.Execute((sceneName, sceneLoading.progress));
             }
             _ctx.OnSceneLoadingDone.Execute(sceneName);
@@ -49,7 +48,7 @@ namespace Game.SceneLoading
             return result;
         }
 
-        public async Task UnloadScene(string sceneName)
+        public async UniTask UnloadScene(string sceneName)
         {
             var currentScene = SceneManager.GetSceneByName(sceneName);
             if (currentScene == null || !currentScene.isLoaded) 
@@ -62,7 +61,7 @@ namespace Game.SceneLoading
             var sceneUnloading = SceneManager.UnloadSceneAsync(sceneName);
             while (sceneUnloading != null && !sceneUnloading.isDone)
             {
-                await Task.Delay(AwaitTicks);
+                await UniTask.Delay(50, true);
                 _ctx.OnSceneUnloading.Execute((sceneName, sceneUnloading.progress));
             }
             _ctx.OnSceneUnloadingDone.Execute(sceneName);

@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 
@@ -30,8 +30,8 @@ namespace Game.LoadingScreen
         public void ShowImmediate() => _loadingScreenLogic.ShowImmediate();
         public void HideImmediate() => _loadingScreenLogic.HideImmediate();
 
-        public async Task Show() => await _loadingScreenLogic.Show();
-        public async Task Hide() => await _loadingScreenLogic.Hide();
+        public async UniTask Show() => await _loadingScreenLogic.Show();
+        public async UniTask Hide() => await _loadingScreenLogic.Hide();
     }
 }
 

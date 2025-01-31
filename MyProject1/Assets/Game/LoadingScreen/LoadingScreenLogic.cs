@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using UnityEngine;
@@ -30,17 +30,16 @@ namespace Game.LoadingScreen
             _ctx.Data.CanvasGroup.alpha = 1f;
         }
 
-        public async Task Show()
+        public async UniTask Show()
         {
             _ctx.Data.CanvasGroup.alpha = 0f;
 
-            const int deltaMs = 50;
             var timer = _ctx.Data.ShowHideDuration;
             while(timer >= 0f)
             {
                 _ctx.Data.CanvasGroup.alpha = 1f - (timer / _ctx.Data.ShowHideDuration);
-                timer -= deltaMs / 1000f;
-                await Task.Delay(deltaMs);
+                timer -= 50 / 1000f;
+                await UniTask.Delay(50, true);
             }
 
             _ctx.Data.CanvasGroup.alpha = 1f;
@@ -51,17 +50,16 @@ namespace Game.LoadingScreen
             _ctx.Data.CanvasGroup.alpha = 0f;
         }
 
-        public async Task Hide()
+        public async UniTask Hide()
         {
             _ctx.Data.CanvasGroup.alpha = 1f;
 
-            const int deltaMs = 50;
             var timer = _ctx.Data.ShowHideDuration;
             while(timer >= 0f)
             {
                 _ctx.Data.CanvasGroup.alpha = timer / _ctx.Data.ShowHideDuration;
-                timer -= deltaMs / 1000f;
-                await Task.Delay(deltaMs);
+                timer -= 50 / 1000f;
+                await UniTask.Delay(50, true);
             }
 
             _ctx.Data.CanvasGroup.alpha = 0f;

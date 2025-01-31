@@ -1,6 +1,6 @@
+using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Game.SceneLoading
@@ -34,12 +34,12 @@ namespace Game.SceneLoading
             }).AddTo(this);
         }
 
-        public async Task<T> LoadScene<T>(string sceneName) where T : MonoBehaviour 
+        public async UniTask<T> LoadScene<T>(string sceneName) where T : MonoBehaviour 
         {
             return await _sceneLoadingLogic.LoadScene<T>(sceneName);
         }
 
-        public async Task UnloadScene(string sceneName) 
+        public async UniTask UnloadScene(string sceneName) 
         {
             await _sceneLoadingLogic.UnloadScene(sceneName);
         }
