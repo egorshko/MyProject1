@@ -95,7 +95,8 @@ namespace Game.City
 
         private async void AsyncInit() 
         {
-            await UniTask.Delay(50, true);
+            var delayMs = 50;
+            await UniTask.Delay(delayMs, true);
 
             _ctx.CurrentCameraPos.Value = _ctx.Data.Builds[0].CamPoint.position;
             _ctx.CurrentCameraRot.Value = _ctx.Data.Builds[0].CamPoint.rotation;

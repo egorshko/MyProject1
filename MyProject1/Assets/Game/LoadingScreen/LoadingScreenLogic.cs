@@ -34,12 +34,15 @@ namespace Game.LoadingScreen
         {
             _ctx.Data.CanvasGroup.alpha = 0f;
 
+            var delayMs = 50;
+            var deltaTime = delayMs / 1000f;
+
             var timer = _ctx.Data.ShowHideDuration;
             while(timer >= 0f)
             {
                 _ctx.Data.CanvasGroup.alpha = 1f - (timer / _ctx.Data.ShowHideDuration);
-                timer -= 50 / 1000f;
-                await UniTask.Delay(50, true);
+                timer -= deltaTime;
+                await UniTask.Delay(delayMs, true);
             }
 
             _ctx.Data.CanvasGroup.alpha = 1f;
@@ -54,12 +57,15 @@ namespace Game.LoadingScreen
         {
             _ctx.Data.CanvasGroup.alpha = 1f;
 
+            var delayMs = 50;
+            var deltaTime = delayMs / 1000f;
+
             var timer = _ctx.Data.ShowHideDuration;
             while(timer >= 0f)
             {
                 _ctx.Data.CanvasGroup.alpha = timer / _ctx.Data.ShowHideDuration;
-                timer -= 50 / 1000f;
-                await UniTask.Delay(50, true);
+                timer -= deltaTime;
+                await UniTask.Delay(delayMs, true);
             }
 
             _ctx.Data.CanvasGroup.alpha = 0f;

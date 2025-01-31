@@ -30,7 +30,8 @@ namespace Game.SceneLoading
             var sceneLoading = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             while (sceneLoading != null && !sceneLoading.isDone)
             {
-                await UniTask.Delay(50, true);
+                var delayMs = 50;
+                await UniTask.Delay(delayMs, true);
                 _ctx.OnSceneLoading.Execute((sceneName, sceneLoading.progress));
             }
             _ctx.OnSceneLoadingDone.Execute(sceneName);
@@ -61,7 +62,8 @@ namespace Game.SceneLoading
             var sceneUnloading = SceneManager.UnloadSceneAsync(sceneName);
             while (sceneUnloading != null && !sceneUnloading.isDone)
             {
-                await UniTask.Delay(50, true);
+                var delayMs = 50;
+                await UniTask.Delay(delayMs, true);
                 _ctx.OnSceneUnloading.Execute((sceneName, sceneUnloading.progress));
             }
             _ctx.OnSceneUnloadingDone.Execute(sceneName);
