@@ -511,6 +511,7 @@ Transform:
   - {fileID: 2110256382}
   - {fileID: 93710023}
   - {fileID: 1054812760}
+  - {fileID: 1577604987}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &711339521
@@ -1205,6 +1206,68 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1523387983}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1577604986
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 508006101}
+    m_Modifications:
+    - target: {fileID: 1682407712963166, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_Name
+      value: SM_Bld_Preset_House_04_Optimized
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.69
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.47921786
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.87769604
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 122.731
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+--- !u!4 &1577604987 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4873982673763222, guid: f3626ee6839141c4eb68cab2cd2fc161, type: 3}
+  m_PrefabInstance: {fileID: 1577604986}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1599396992
 GameObject:
   m_ObjectHideFlags: 0
@@ -1764,6 +1827,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _world: -1000
   _useDistance: 4
+  _worldPos: {x: 0, y: 0, z: 0}
+  _worldRot: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

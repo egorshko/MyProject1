@@ -511,6 +511,7 @@ Transform:
   - {fileID: 2110256382}
   - {fileID: 93710023}
   - {fileID: 1054812760}
+  - {fileID: 932626456}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &711339521
@@ -881,6 +882,68 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 921688137}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &932626455
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 508006101}
+    m_Modifications:
+    - target: {fileID: 1257024709312140, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_Name
+      value: SM_Bld_Preset_Church_01_A_Optimized
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.042714
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 17.320927
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.052469615
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.99862254
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 186.015
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+--- !u!4 &932626456 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4537870369339434, guid: 7038763010482764cadfe26b89e05c78, type: 3}
+  m_PrefabInstance: {fileID: 932626455}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1019616796
 GameObject:
   m_ObjectHideFlags: 0
@@ -1764,6 +1827,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _world: -999
   _useDistance: 4
+  _worldPos: {x: 0, y: 0, z: 0}
+  _worldRot: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
