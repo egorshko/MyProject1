@@ -1,8 +1,6 @@
-using Game.City;
 using Game.LoadingScreen;
 using Game.MenuScreen;
 using Game.SceneLoading;
-using Game.Space;
 using Game.World;
 using Shared.Disposable;
 using Shared.Reactive;
@@ -47,8 +45,6 @@ namespace Game
 
                 GetLoadingScreen = sceneName => _sceneLoadingEntity.LoadScene<LoadingScreenEntryPoint>(sceneName),
                 GetMenuScreen = sceneName => _sceneLoadingEntity.LoadScene<MenuScreenEntryPoint>(sceneName),
-                GetSpace = sceneName => _sceneLoadingEntity.LoadScene<SpaceEntryPoint>(sceneName),
-                GetCity = sceneName => _sceneLoadingEntity.LoadScene<CityEntryPoint>(sceneName),
 
                 GetWorld = sceneName => _sceneLoadingEntity.LoadScene<WorldEntryPoint>(sceneName),
 
@@ -91,29 +87,8 @@ namespace Game
         {
             _menuScreen.SetButtons(MenuScreenType.Vertical, "Main menu", 
                 null,
-                ("Play", LoadSpace),
                 ("World", () => LoadWorld((WorldEntryPoint.World.World_Test_0, Vector3.zero, Vector3.zero))),
                 ("Quit", Application.Quit));
-        }
-
-        private async void LoadSpace() 
-        {
-            await _loadingScreen.Show();
-            await _gameLogic.UnloadAll();
-
-            //TODO load _spacePos and _spaceRot here...
-
-            _ = await _gameLogic.GetSpace(new SpaceEntryPoint.Ctx
-            {
-                SpacePos = _spacePos,
-                SpaceRot = _spaceRot,
-                OnUpdate = _ctx.OnUpdate,
-                ShowMenu = ShowSpaceMenu,
-                IsShowMenu = _isShowMenu,
-                LoadCity = LoadCity,
-            });
-            _menuScreen.Hide();
-            await _loadingScreen.Hide();
         }
 
         private void ShowSpaceMenu() 
@@ -132,24 +107,10 @@ namespace Game
             }
         }
 
-        private async void LoadCity(GameObject data) 
-        {
-            await _loadingScreen.Show();
-            await _gameLogic.UnloadAll();
-            _ = await _gameLogic.GetCity(new CityEntryPoint.Ctx
-            {
-                OnUpdate = _ctx.OnUpdate,
-                ToSpace = LoadSpace,
-            });
-            await _loadingScreen.Hide();
-        }
-
         private async void LoadWorld((WorldEntryPoint.World world, Vector3 worldPos, Vector3 worldRot) data)
         {
             await _loadingScreen.Show();
             await _gameLogic.UnloadAll();
-
-            //TODO load _spacePos and _spaceRot wor forld here...
 
             _ = await _gameLogic.GetWorld(data.world, new WorldEntryPoint.Ctx
             {

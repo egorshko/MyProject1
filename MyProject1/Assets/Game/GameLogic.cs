@@ -1,8 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Game.City;
 using Game.LoadingScreen;
 using Game.MenuScreen;
-using Game.Space;
 using Game.World;
 using Shared.Disposable;
 using Shared.Reactive;
@@ -19,8 +17,6 @@ namespace Game
 
             public Func<string, UniTask<LoadingScreenEntryPoint>> GetLoadingScreen;
             public Func<string, UniTask<MenuScreenEntryPoint>> GetMenuScreen;
-            public Func<string, UniTask<SpaceEntryPoint>> GetSpace;
-            public Func<string, UniTask<CityEntryPoint>> GetCity;
             public Func<string, UniTask<WorldEntryPoint>> GetWorld;
             public Func<string, UniTask> UnloadScene;
         }
@@ -53,26 +49,6 @@ namespace Game
             return menuScreenEntryPoint;
         }
 
-        public async UniTask<SpaceEntryPoint> GetSpace(SpaceEntryPoint.Ctx ctx)
-        {
-            var spaceEntryPoint = await _ctx.GetSpace.Invoke(SpaceName);
-            spaceEntryPoint.Init(ctx);
-            new DisposeObserver(async () => await UnloadScene(SpaceName)).AddTo(this);
-            return spaceEntryPoint;
-        }
-
-        private async UniTask UnloadSpace() => await UnloadScene(SpaceName);
-
-        public async UniTask<CityEntryPoint> GetCity(CityEntryPoint.Ctx ctx)
-        {
-            var cityEntryPoint = await _ctx.GetCity.Invoke(CityName);
-            cityEntryPoint.Init(ctx);
-            new DisposeObserver(async () => await UnloadScene(CityName)).AddTo(this);
-            return cityEntryPoint;
-        }
-
-        private async UniTask UnloadCity() => await UnloadScene(CityName);
-
         public async UniTask<WorldEntryPoint> GetWorld(WorldEntryPoint.World world, WorldEntryPoint.Ctx ctx)
         {
             var worldEntryPoint = await _ctx.GetWorld.Invoke(world.ToString());
@@ -92,8 +68,6 @@ namespace Game
 
         public async UniTask UnloadAll()
         {
-            await UnloadSpace();
-            await UnloadCity();
             await UnloadWorlds();
         }
     }

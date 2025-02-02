@@ -15,12 +15,6 @@ EditorBuildSettings:
     path: Assets/Game/MenuScreen/MenuScreen.unity
     guid: c6ce3a21a055145bdba5a6a0fec45d67
   - enabled: 1
-    path: Assets/Game/Space/Space.unity
-    guid: 4f373dc1b4829cc458dc9e4259b9ebc0
-  - enabled: 1
-    path: Assets/Game/City/City.unity
-    guid: 57452c0148d116e4a906b80665425bbd
-  - enabled: 1
     path: Assets/Game/World/World_Test_0.unity
     guid: 8d1a4caaa98c23c41a12f1792d9454fb
   - enabled: 1
