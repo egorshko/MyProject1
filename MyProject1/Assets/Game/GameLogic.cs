@@ -3,6 +3,7 @@ using Game.City;
 using Game.LoadingScreen;
 using Game.MenuScreen;
 using Game.Space;
+using Game.World;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
@@ -20,6 +21,7 @@ namespace Game
             public Func<string, UniTask<MenuScreenEntryPoint>> GetMenuScreen;
             public Func<string, UniTask<SpaceEntryPoint>> GetSpace;
             public Func<string, UniTask<CityEntryPoint>> GetCity;
+            public Func<string, UniTask<WorldEntryPoint>> GetWorld;
             public Func<string, UniTask> UnloadScene;
         }
 
@@ -71,12 +73,28 @@ namespace Game
 
         private async UniTask UnloadCity() => await UnloadScene(CityName);
 
+        public async UniTask<WorldEntryPoint> GetWorld(WorldEntryPoint.World world, WorldEntryPoint.Ctx ctx)
+        {
+            var worldEntryPoint = await _ctx.GetWorld.Invoke(world.ToString());
+            worldEntryPoint.Init(ctx);
+            new DisposeObserver(async () => await UnloadScene(world.ToString())).AddTo(this);
+            return worldEntryPoint;
+        }
+
+        private async UniTask UnloadWorlds() 
+        {
+            var worlds = Enum.GetNames(typeof(WorldEntryPoint.World));
+            foreach(var worldName in worlds)
+                await UnloadScene(worldName); 
+        }
+
         private async UniTask UnloadScene(string sceneName) => await _ctx.UnloadScene(sceneName);
 
         public async UniTask UnloadAll()
         {
             await UnloadSpace();
             await UnloadCity();
+            await UnloadWorlds();
         }
     }
 }

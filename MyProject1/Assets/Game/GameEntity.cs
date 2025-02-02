@@ -3,6 +3,7 @@ using Game.LoadingScreen;
 using Game.MenuScreen;
 using Game.SceneLoading;
 using Game.Space;
+using Game.World;
 using Shared.Disposable;
 using Shared.Reactive;
 using UnityEngine;
@@ -49,6 +50,8 @@ namespace Game
                 GetSpace = sceneName => _sceneLoadingEntity.LoadScene<SpaceEntryPoint>(sceneName),
                 GetCity = sceneName => _sceneLoadingEntity.LoadScene<CityEntryPoint>(sceneName),
 
+                GetWorld = sceneName => _sceneLoadingEntity.LoadScene<WorldEntryPoint>(sceneName),
+
                 UnloadScene = sceneName => _sceneLoadingEntity.UnloadScene(sceneName),
             }).AddTo(this);
 
@@ -89,6 +92,7 @@ namespace Game
             _menuScreen.SetButtons(MenuScreenType.Vertical, "Main menu", 
                 null,
                 ("Play", LoadSpace),
+                ("World", () => LoadWorld((WorldEntryPoint.World.World_Test_0, Vector3.zero, Vector3.zero))),
                 ("Quit", Application.Quit));
         }
 
@@ -137,6 +141,26 @@ namespace Game
                 OnUpdate = _ctx.OnUpdate,
                 ToSpace = LoadSpace,
             });
+            await _loadingScreen.Hide();
+        }
+
+        private async void LoadWorld((WorldEntryPoint.World world, Vector3 worldPos, Vector3 worldRot) data)
+        {
+            await _loadingScreen.Show();
+            await _gameLogic.UnloadAll();
+
+            //TODO load _spacePos and _spaceRot wor forld here...
+
+            _ = await _gameLogic.GetWorld(data.world, new WorldEntryPoint.Ctx
+            {
+                WorldPos = data.worldPos,
+                WorldRot = Quaternion.Euler(data.worldRot),
+                OnUpdate = _ctx.OnUpdate,
+                ShowMenu = ShowSpaceMenu,
+                IsShowMenu = _isShowMenu,
+                LoadWorld = LoadWorld,
+            });
+            _menuScreen.Hide();
             await _loadingScreen.Hide();
         }
     }
