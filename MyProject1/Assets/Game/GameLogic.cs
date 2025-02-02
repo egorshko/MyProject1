@@ -21,9 +21,6 @@ namespace Game
             public Func<string, UniTask> UnloadScene;
         }
 
-        private const string SpaceName = "Space";
-        private const string CityName = "City";
-
         private readonly Ctx _ctx;
 
         public GameLogic(Ctx ctx)
@@ -36,7 +33,7 @@ namespace Game
             const string loadingScreenName = "LoadingScreen";
             var loadingScreenEntryPoint = await _ctx.GetLoadingScreen.Invoke(loadingScreenName);
             loadingScreenEntryPoint.Init(ctx);
-            new DisposeObserver(async () => await UnloadScene(loadingScreenName)).AddTo(this);
+            new DisposeObserver(async () => await _ctx.UnloadScene(loadingScreenName)).AddTo(this);
             return loadingScreenEntryPoint;
         }
 
@@ -45,7 +42,7 @@ namespace Game
             const string menuScreenName = "MenuScreen";
             var menuScreenEntryPoint = await _ctx.GetMenuScreen.Invoke(menuScreenName);
             menuScreenEntryPoint.Init(ctx);
-            new DisposeObserver(async () => await UnloadScene(menuScreenName)).AddTo(this);
+            new DisposeObserver(async () => await _ctx.UnloadScene(menuScreenName)).AddTo(this);
             return menuScreenEntryPoint;
         }
 
@@ -53,7 +50,6 @@ namespace Game
         {
             var worldEntryPoint = await _ctx.GetWorld.Invoke(world.ToString());
             worldEntryPoint.Init(ctx);
-            new DisposeObserver(async () => await UnloadScene(world.ToString())).AddTo(this);
             return worldEntryPoint;
         }
 
@@ -61,14 +57,18 @@ namespace Game
         {
             var worlds = Enum.GetNames(typeof(WorldEntryPoint.World));
             foreach(var worldName in worlds)
-                await UnloadScene(worldName); 
+                await _ctx.UnloadScene(worldName); 
         }
-
-        private async UniTask UnloadScene(string sceneName) => await _ctx.UnloadScene(sceneName);
 
         public async UniTask UnloadAll()
         {
             await UnloadWorlds();
+        }
+
+        protected override async UniTask OnAsyncDispose()
+        {
+            await UnloadAll();
+            await base.OnAsyncDispose();
         }
     }
 }
