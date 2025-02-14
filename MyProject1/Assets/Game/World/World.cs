@@ -8,7 +8,7 @@ namespace Game.World
 {
     public class World : BaseDisposableMB
     {
-        public class Entity : BaseDisposable
+        private class Entity : BaseDisposable
         {
             private class Logic : BaseDisposable
             {
@@ -31,23 +31,13 @@ namespace Game.World
                 }
             }
 
-            public class CameraLogic : BaseDisposable
+            private class CameraLogic : BaseDisposable
             {
-                [Serializable]
-                public struct Data
-                {
-                    [SerializeField] private Vector3 _cameraOffset;
-                    [SerializeField] private float _cameraSense;
-
-                    public readonly Vector3 CameraOffset => _cameraOffset;
-                    public readonly float CameraSense => _cameraSense;
-                }
-
                 public struct Ctx
                 {
                     public IReadOnlyReactiveCommand<float> OnUpdate;
                     public Transform PlayerTransform;
-                    public Data Data;
+                    public Data.CameraData Data;
                 }
 
                 private Ctx _ctx;
@@ -72,30 +62,14 @@ namespace Game.World
                 }
             }
 
-            public class CharacterLogic : BaseDisposable
+            private class CharacterLogic : BaseDisposable
             {
-                [Serializable]
-                public struct Data
-                {
-                    [SerializeField] private GameObject _targetMarkerGO;
-                    [SerializeField] private GameObject _playerGO;
-                    [SerializeField] private float _speed;
-                    [SerializeField] private float _angularSpeed;
-                    [SerializeField] private float _acceleration;
-
-                    public readonly GameObject TargetMarkerGO => _targetMarkerGO;
-                    public readonly GameObject PlayerGO => _playerGO;
-                    public readonly float Speed => _speed;
-                    public readonly float AngularSpeed => _angularSpeed;
-                    public readonly float Acceleration => _acceleration;
-                }
-
                 public struct Ctx
                 {
                     public Vector3 WorldPos;
                     public Quaternion WorldRot;
                     public IReadOnlyReactiveCommand<float> OnUpdate;
-                    public Data Data;
+                    public Data.CharacterData Data;
                     public IReadOnlyReactiveValue<bool> IsShowMenu;
                     public Action<(World.WorldName world, Vector3 worldPos, Vector3 worldRot)> LoadWorld;
                 }
@@ -193,8 +167,8 @@ namespace Game.World
                 _ = new CameraLogic(new CameraLogic.Ctx
                 {
                     OnUpdate = _ctx.OnUpdate,
-                    PlayerTransform = _ctx.Data.PlayerData.PlayerGO.transform,
-                    Data = _ctx.Data.CameraData,
+                    PlayerTransform = _ctx.Data.Player.PlayerGO.transform,
+                    Data = _ctx.Data.Camera,
                 }).AddTo(this);
 
                 _ = new CharacterLogic(new CharacterLogic.Ctx
@@ -202,7 +176,7 @@ namespace Game.World
                     WorldPos = _ctx.WorldPos,
                     WorldRot = _ctx.WorldRot,
                     OnUpdate = _ctx.OnUpdate,
-                    Data = _ctx.Data.PlayerData,
+                    Data = _ctx.Data.Player,
                     IsShowMenu = _ctx.IsShowMenu,
                     LoadWorld = _ctx.LoadWorld,
                 }).AddTo(this);
@@ -218,11 +192,37 @@ namespace Game.World
         [Serializable]
         public struct Data
         {
-            [SerializeField] private Entity.CharacterLogic.Data _playerData;
-            [SerializeField] private Entity.CameraLogic.Data _cameraData;
+            [Serializable]
+            public struct CharacterData
+            {
+                [SerializeField] private GameObject _targetMarkerGO;
+                [SerializeField] private GameObject _playerGO;
+                [SerializeField] private float _speed;
+                [SerializeField] private float _angularSpeed;
+                [SerializeField] private float _acceleration;
 
-            public readonly Entity.CharacterLogic.Data PlayerData => _playerData;
-            public readonly Entity.CameraLogic.Data CameraData => _cameraData;
+                public readonly GameObject TargetMarkerGO => _targetMarkerGO;
+                public readonly GameObject PlayerGO => _playerGO;
+                public readonly float Speed => _speed;
+                public readonly float AngularSpeed => _angularSpeed;
+                public readonly float Acceleration => _acceleration;
+            }
+
+            [Serializable]
+            public struct CameraData
+            {
+                [SerializeField] private Vector3 _cameraOffset;
+                [SerializeField] private float _cameraSense;
+
+                public readonly Vector3 CameraOffset => _cameraOffset;
+                public readonly float CameraSense => _cameraSense;
+            }
+
+            [SerializeField] private CharacterData _playerData;
+            [SerializeField] private CameraData _cameraData;
+
+            public readonly CharacterData Player => _playerData;
+            public readonly CameraData Camera => _cameraData;
         }
 
         public struct Ctx
