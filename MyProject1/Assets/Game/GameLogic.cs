@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Game.LoadingScreen;
 using Game.MenuScreen;
 using Game.World;
 using Shared.Disposable;
@@ -15,7 +14,7 @@ namespace Game
         {
             public IReadOnlyReactiveCommand<float> OnUpdate;
 
-            public Func<string, UniTask<LoadingScreenEntryPoint>> GetLoadingScreen;
+            public Func<string, UniTask<LoadingScreen.LoadingScreen>> GetLoadingScreen;
             public Func<string, UniTask<MenuScreenEntryPoint>> GetMenuScreen;
             public Func<string, UniTask<WorldEntryPoint>> GetWorld;
             public Func<string, UniTask> UnloadScene;
@@ -28,7 +27,7 @@ namespace Game
             _ctx = ctx;
         }
 
-        public async UniTask<LoadingScreenEntryPoint> GetLoadingScreen(LoadingScreenEntryPoint.Ctx ctx)
+        public async UniTask<LoadingScreen.LoadingScreen> GetLoadingScreen(LoadingScreen.LoadingScreen.Ctx ctx)
         {
             const string loadingScreenName = "LoadingScreen";
             var loadingScreenEntryPoint = await _ctx.GetLoadingScreen.Invoke(loadingScreenName);

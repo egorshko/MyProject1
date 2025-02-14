@@ -1,4 +1,3 @@
-using Game.LoadingScreen;
 using Game.MenuScreen;
 using Game.SceneLoading;
 using Game.World;
@@ -26,7 +25,7 @@ namespace Game
 
         private SceneLoadingEntity _sceneLoadingEntity;
 
-        private LoadingScreenEntryPoint _loadingScreen;
+        private LoadingScreen.LoadingScreen _loadingScreen;
         private MenuScreenEntryPoint _menuScreen;
 
         public GameEntity(Ctx ctx)
@@ -43,7 +42,7 @@ namespace Game
             {
                 OnUpdate = _ctx.OnUpdate,
 
-                GetLoadingScreen = sceneName => _sceneLoadingEntity.LoadScene<LoadingScreenEntryPoint>(sceneName),
+                GetLoadingScreen = sceneName => _sceneLoadingEntity.LoadScene<LoadingScreen.LoadingScreen>(sceneName),
                 GetMenuScreen = sceneName => _sceneLoadingEntity.LoadScene<MenuScreenEntryPoint>(sceneName),
 
                 GetWorld = sceneName => _sceneLoadingEntity.LoadScene<WorldEntryPoint>(sceneName),
@@ -69,7 +68,7 @@ namespace Game
 
         private async void AsyncInit() 
         {
-            _loadingScreen = await _gameLogic.GetLoadingScreen(new LoadingScreenEntryPoint.Ctx
+            _loadingScreen = await _gameLogic.GetLoadingScreen(new LoadingScreen.LoadingScreen.Ctx
             {
                 OnUpdate = _ctx.OnUpdate,
             });
