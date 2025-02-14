@@ -1,4 +1,3 @@
-using Game.MenuScreen;
 using Game.SceneLoading;
 using Game.World;
 using Shared.Disposable;
@@ -26,7 +25,7 @@ namespace Game
         private SceneLoadingEntity _sceneLoadingEntity;
 
         private LoadingScreen.LoadingScreen _loadingScreen;
-        private MenuScreenEntryPoint _menuScreen;
+        private MenuScreen.MenuScreen _menuScreen;
 
         public GameEntity(Ctx ctx)
         {
@@ -43,7 +42,7 @@ namespace Game
                 OnUpdate = _ctx.OnUpdate,
 
                 GetLoadingScreen = sceneName => _sceneLoadingEntity.LoadScene<LoadingScreen.LoadingScreen>(sceneName),
-                GetMenuScreen = sceneName => _sceneLoadingEntity.LoadScene<MenuScreenEntryPoint>(sceneName),
+                GetMenuScreen = sceneName => _sceneLoadingEntity.LoadScene<MenuScreen.MenuScreen>(sceneName),
 
                 GetWorld = sceneName => _sceneLoadingEntity.LoadScene<WorldEntryPoint>(sceneName),
 
@@ -73,7 +72,7 @@ namespace Game
                 OnUpdate = _ctx.OnUpdate,
             });
             _loadingScreen.ShowImmediate();
-            _menuScreen = await _gameLogic.GetMenuScreen(new MenuScreenEntryPoint.Ctx
+            _menuScreen = await _gameLogic.GetMenuScreen(new MenuScreen.MenuScreen.Ctx
             {
                 OnUpdate = _ctx.OnUpdate,
                 IsShowMenu = _isShowMenu,
@@ -84,7 +83,7 @@ namespace Game
 
         private void SetMainMenuButtons() 
         {
-            _menuScreen.SetButtons(MenuScreenType.Vertical, "Main menu", 
+            _menuScreen.SetButtons(MenuScreen.MenuScreen.MenuScreenType.Vertical, "Main menu", 
                 null,
                 ("World", () => LoadWorld((WorldEntryPoint.World.World_Test_0, Vector3.zero, Vector3.zero))),
                 ("Quit", Application.Quit));
@@ -92,7 +91,7 @@ namespace Game
 
         private void ShowSpaceMenu() 
         {
-            _menuScreen.SetButtons(MenuScreenType.Vertical, "Space menu",
+            _menuScreen.SetButtons(MenuScreen.MenuScreen.MenuScreenType.Vertical, "Space menu",
                 _menuScreen.Hide,
                 ("Continue", _menuScreen.Hide),
                 ("Main menu", ToMainMenu));

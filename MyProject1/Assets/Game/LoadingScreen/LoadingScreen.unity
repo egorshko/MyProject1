@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 749407135}
   - component: {fileID: 749407136}
   m_Layer: 0
-  m_Name: LoadingScreenEntryPoint
+  m_Name: LoadingScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
