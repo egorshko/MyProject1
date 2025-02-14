@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 89194947}
   - component: {fileID: 89194946}
   m_Layer: 0
-  m_Name: GameEntryPoint
+  m_Name: Game
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,8 +148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4415d73f59efa4488da8bbf9c5cb0aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data:
-    _camera: {fileID: 1533642155}
 --- !u!4 &89194947
 Transform:
   m_ObjectHideFlags: 0
