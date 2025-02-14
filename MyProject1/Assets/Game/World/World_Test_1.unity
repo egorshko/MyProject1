@@ -973,7 +973,7 @@ GameObject:
   - component: {fileID: 826703080}
   - component: {fileID: 826703081}
   m_Layer: 0
-  m_Name: WorldEntryPoint
+  m_Name: World
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1003,7 +1003,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 826703079}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e877837b5114da43ad994e7ec50d455, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d3ca0196ac8e89409001a6a408d8cff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _data:

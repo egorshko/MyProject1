@@ -1,4 +1,3 @@
-using Game.SceneLoading;
 using Game.World;
 using Shared.Disposable;
 using Shared.Reactive;
@@ -22,7 +21,7 @@ namespace Game
 
         private GameLogic _gameLogic;
 
-        private SceneLoadingEntity _sceneLoadingEntity;
+        private SceneLoading.SceneLoading.Entity _sceneLoadingEntity;
 
         private LoadingScreen.LoadingScreen _loadingScreen;
         private MenuScreen.MenuScreen _menuScreen;
@@ -44,7 +43,7 @@ namespace Game
                 GetLoadingScreen = sceneName => _sceneLoadingEntity.LoadScene<LoadingScreen.LoadingScreen>(sceneName),
                 GetMenuScreen = sceneName => _sceneLoadingEntity.LoadScene<MenuScreen.MenuScreen>(sceneName),
 
-                GetWorld = sceneName => _sceneLoadingEntity.LoadScene<WorldEntryPoint>(sceneName),
+                GetWorld = sceneName => _sceneLoadingEntity.LoadScene<World.World>(sceneName),
 
                 UnloadScene = sceneName => _sceneLoadingEntity.UnloadScene(sceneName),
             }).AddTo(this);
@@ -53,7 +52,7 @@ namespace Game
             var onSceneLoadingDone = new ReactiveCommand<string>().AddTo(this);
             var onSceneUnloading = new ReactiveCommand<(string sceneName, float progress)>().AddTo(this);
             var onSceneUnloadingDone = new ReactiveCommand<string>().AddTo(this);
-            _sceneLoadingEntity = new SceneLoadingEntity(new SceneLoadingEntity.Ctx 
+            _sceneLoadingEntity = new SceneLoading.SceneLoading.Entity(new SceneLoading.SceneLoading.Entity.Ctx 
             {
                 OnSceneLoading = onSceneLoading,
                 OnSceneLoadingDone = onSceneLoadingDone,
@@ -85,7 +84,7 @@ namespace Game
         {
             _menuScreen.SetButtons(MenuScreen.MenuScreen.MenuScreenType.Vertical, "Main menu", 
                 null,
-                ("World", () => LoadWorld((WorldEntryPoint.World.World_Test_0, Vector3.zero, Vector3.zero))),
+                ("World", () => LoadWorld((World.World.WorldName.World_Test_0, Vector3.zero, Vector3.zero))),
                 ("Quit", Application.Quit));
         }
 
@@ -105,12 +104,12 @@ namespace Game
             }
         }
 
-        private async void LoadWorld((WorldEntryPoint.World world, Vector3 worldPos, Vector3 worldRot) data)
+        private async void LoadWorld((World.World.WorldName world, Vector3 worldPos, Vector3 worldRot) data)
         {
             await _loadingScreen.Show();
             await _gameLogic.UnloadAll();
 
-            _ = await _gameLogic.GetWorld(data.world, new WorldEntryPoint.Ctx
+            _ = await _gameLogic.GetWorld(data.world, new World.World.Ctx
             {
                 WorldPos = data.worldPos,
                 WorldRot = Quaternion.Euler(data.worldRot),

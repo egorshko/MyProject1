@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Game.World;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
@@ -15,7 +14,7 @@ namespace Game
 
             public Func<string, UniTask<LoadingScreen.LoadingScreen>> GetLoadingScreen;
             public Func<string, UniTask<MenuScreen.MenuScreen>> GetMenuScreen;
-            public Func<string, UniTask<WorldEntryPoint>> GetWorld;
+            public Func<string, UniTask<World.World>> GetWorld;
             public Func<string, UniTask> UnloadScene;
         }
 
@@ -44,7 +43,7 @@ namespace Game
             return menuScreenEntryPoint;
         }
 
-        public async UniTask<WorldEntryPoint> GetWorld(WorldEntryPoint.World world, WorldEntryPoint.Ctx ctx)
+        public async UniTask<World.World> GetWorld(World.World.WorldName world, World.World.Ctx ctx)
         {
             var worldEntryPoint = await _ctx.GetWorld.Invoke(world.ToString());
             worldEntryPoint.Init(ctx);
@@ -53,7 +52,7 @@ namespace Game
 
         private async UniTask UnloadWorlds() 
         {
-            var worlds = Enum.GetNames(typeof(WorldEntryPoint.World));
+            var worlds = Enum.GetNames(typeof(World.World.WorldName));
             foreach(var worldName in worlds)
                 await _ctx.UnloadScene(worldName); 
         }
