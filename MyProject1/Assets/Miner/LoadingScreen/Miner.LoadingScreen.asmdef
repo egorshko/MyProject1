@@ -1,10 +1,9 @@
 {
-    "name": "Miner",
+    "name": "Miner.LoadingScreen",
     "rootNamespace": "",
     "references": [
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:c5c25fbf7939e5a4e8bba6f4f6d45750",
-        "GUID:572ef435e387f3040828ff6074e99d27"
+        "GUID:c5c25fbf7939e5a4e8bba6f4f6d45750"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
