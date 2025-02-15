@@ -8,13 +8,14 @@ namespace Miner.LoadingScreen
 {
     public sealed class LoadingScreen
     {
-        private class Entity : BaseDisposable
+        public class Entity : BaseDisposable
         {
             private class Logic : BaseDisposable
             {
                 public struct Ctx
                 {
                     public IReadOnlyReactiveCommand<float> OnUpdate;
+
                     public Data Data;
                 }
 
@@ -85,7 +86,7 @@ namespace Miner.LoadingScreen
 
             private Ctx _ctx;
 
-            private Logic _loadingScreenLogic;
+            private readonly Logic _loadingScreenLogic;
 
             public Entity(Ctx ctx)
             {
