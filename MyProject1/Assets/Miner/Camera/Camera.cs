@@ -54,7 +54,7 @@ namespace Miner.Camera
 
                 private Vector3 GetCameraOffset()
                 {
-                    _zoomValue += Input.GetAxis("Mouse ScrollWheel") * _ctx.Data.ZoomSense;
+                    _zoomValue += SimpleInput.GetAxis("Mouse ScrollWheel") * _ctx.Data.ZoomSense;
 
                     _zoomValue = Mathf.Clamp01(_zoomValue);
                     return Vector3.Lerp(_ctx.Data.CameraOffsetNear, _ctx.Data.CameraOffsetFar, _zoomValue);
@@ -62,6 +62,8 @@ namespace Miner.Camera
 
                 private void UpdateCameraTargetPos()
                 {
+                    if (Input.touchCount > 1) return;
+
                     var ray = _camera.ScreenPointToRay(Input.mousePosition);
                     if (Input.GetMouseButtonDown(0) && RayCast(ray, out var startHit))
                     { 
