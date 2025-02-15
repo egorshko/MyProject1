@@ -21,10 +21,11 @@ namespace Miner.Camera
 
                 private Ctx _ctx;
 
+                private float _zoomValue;
                 private Vector3 _startTargetPos;
                 private Vector3 _startInputPos;
-                private UnityEngine.Camera _camera;
-                private Transform _cameraTarget;
+                private readonly UnityEngine.Camera _camera;
+                private readonly Transform _cameraTarget;
 
                 public Logic(Ctx ctx)
                 {
@@ -47,8 +48,16 @@ namespace Miner.Camera
 
                     var sense = deltaTime * _ctx.Data.CameraSense;
 
-                    var targetPos = _cameraTarget.position + _ctx.Data.CameraOffset;
+                    var targetPos = _cameraTarget.position + GetCameraOffset();
                     _camera.transform.position = Vector3.Lerp(_camera.transform.position, targetPos, sense);
+                }
+
+                private Vector3 GetCameraOffset()
+                {
+                    _zoomValue += Input.GetAxis("Mouse ScrollWheel") * _ctx.Data.ZoomSense;
+
+                    _zoomValue = Mathf.Clamp01(_zoomValue);
+                    return Vector3.Lerp(_ctx.Data.CameraOffsetNear, _ctx.Data.CameraOffsetFar, _zoomValue);
                 }
 
                 private void UpdateCameraTargetPos()
@@ -71,6 +80,7 @@ namespace Miner.Camera
                     cameraTargetPos.y = 0f;
                     _cameraTarget.position = cameraTargetPos;
                 }
+
                 private bool RayCast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Ground"));
 
                 protected override async UniTask OnAsyncDispose()
@@ -104,10 +114,14 @@ namespace Miner.Camera
         public struct Data
         {
             [SerializeField] private float _cameraSense;
-            [SerializeField] private Vector3 _cameraOffset;
+            [SerializeField] private float _zoomSense;
+            [SerializeField] private Vector3 _cameraOffsetFar;
+            [SerializeField] private Vector3 _cameraOffsetNear;
 
             public readonly float CameraSense => _cameraSense;
-            public readonly Vector3 CameraOffset => _cameraOffset;
+            public readonly float ZoomSense => _zoomSense;
+            public readonly Vector3 CameraOffsetFar => _cameraOffsetFar;
+            public readonly Vector3 CameraOffsetNear => _cameraOffsetNear;
         }
     }
 }
