@@ -39,6 +39,7 @@ namespace Miner.LoadingScreen
                 public async UniTask Show()
                 {
                     _ctx.Data.CanvasGroup.alpha = 0f;
+                    _ctx.Data.CanvasGroup.gameObject.SetActive(true);
 
                     var delayMs = 50;
                     var deltaTime = delayMs / 1000f;
@@ -52,6 +53,7 @@ namespace Miner.LoadingScreen
                     }
 
                     _ctx.Data.CanvasGroup.alpha = 1f;
+                    _ctx.Data.CanvasGroup.gameObject.SetActive(false);
                 }
 
                 public void HideImmediate()
@@ -62,6 +64,7 @@ namespace Miner.LoadingScreen
                 public async UniTask Hide()
                 {
                     _ctx.Data.CanvasGroup.alpha = 1f;
+                    _ctx.Data.CanvasGroup.gameObject.SetActive(true);
 
                     var delayMs = 50;
                     var deltaTime = delayMs / 1000f;
@@ -75,6 +78,7 @@ namespace Miner.LoadingScreen
                     }
 
                     _ctx.Data.CanvasGroup.alpha = 0f;
+                    _ctx.Data.CanvasGroup.gameObject.SetActive(false);
                 }
             }
 
