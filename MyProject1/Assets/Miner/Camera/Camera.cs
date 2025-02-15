@@ -67,22 +67,24 @@ namespace Miner.Camera
                     var touches = Input.touches;
                     if (touches.Length != 1) return;
 
-                    Touch targetTouch = default;
+                    var targetTouch = touches.First();
                     if (_lastFingerId.HasValue && touches.Any(t => t.fingerId == _lastFingerId.Value))
-                        targetTouch = touches.First(t => t.fingerId == _lastFingerId.Value);
-                    else
-                        targetTouch = touches.First();
-
-                    _lastFingerId = targetTouch.fingerId;
-
-                    var ray = _camera.ScreenPointToRay(targetTouch.position);
-                    if (targetTouch.phase == TouchPhase.Began && RayCast(ray, out var startHit))
                     { 
+                        targetTouch = touches.First(t => t.fingerId == _lastFingerId.Value); 
+                    }
+                    else if (RayCast(_camera.ScreenPointToRay(targetTouch.position), out var startHit))
+                    {
                         _startInputPos = startHit.point;
                         _startTargetPos = _cameraTarget.position;
                     }
+                    else 
+                    {
+                        return;
+                    }
 
-                    if (targetTouch.phase == TouchPhase.Moved && RayCast(ray, out var hit))
+                    _lastFingerId = targetTouch.fingerId;
+
+                    if (targetTouch.phase == TouchPhase.Moved && RayCast(_camera.ScreenPointToRay(targetTouch.position), out var hit))
                     { 
                         _cameraTarget.position = _startTargetPos - (hit.point - _startInputPos);
                         PlayerPrefs.SetFloat("CamTargetPosX", _cameraTarget.position.x);
