@@ -205,7 +205,7 @@ Transform:
   m_GameObject: {fileID: 975194}
   serializedVersion: 2
   m_LocalRotation: {x: -0.3932813, y: 0.3000678, z: -0.13796334, w: -0.8580532}
-  m_LocalPosition: {x: 4.5778146, y: 6.013461, z: -5.0096064}
+  m_LocalPosition: {x: 0, y: 5, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: 403567795}
   - component: {fileID: 403567794}
   - component: {fileID: 403567793}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1237,6 +1237,9 @@ MonoBehaviour:
       _canvasGroup: {fileID: 429517967}
       _spinnerView: {fileID: 1009486172}
       _rotateSpeed: 15
+    _cameraData:
+      _cameraSense: 15
+      _cameraOffset: {x: 0, y: 5, z: -5}
 --- !u!4 &1540639363
 Transform:
   m_ObjectHideFlags: 0

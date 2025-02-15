@@ -51,6 +51,12 @@ namespace Miner
                     Data = _ctx.Data.LoadingScreenData,
                 }).AddTo(this);
 
+                _ = new Camera.Camera.Entity(new Camera.Camera.Entity.Ctx
+                {
+                    OnUpdate = _ctx.OnUpdate,
+                    Data = _ctx.Data.CameraData,
+                }).AddTo(this);
+
                 AsyncInit();
             }
 
@@ -68,8 +74,10 @@ namespace Miner
         private struct Data
         {
             [SerializeField] private LoadingScreen.LoadingScreen.Data _loadingScreenData;
+            [SerializeField] private Camera.Camera.Data _cameraData;
 
             public readonly LoadingScreen.LoadingScreen.Data LoadingScreenData => _loadingScreenData;
+            public readonly Camera.Camera.Data CameraData => _cameraData;
         }
 
         [SerializeField] private Data _data;
