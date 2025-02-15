@@ -88,13 +88,11 @@ namespace Miner.Camera
 
             private Ctx _ctx;
 
-            private readonly Logic _logic;
-
             public Entity(Ctx ctx)
             {
                 _ctx = ctx;
 
-                _logic = new Logic(new Logic.Ctx
+                _ = new Logic(new Logic.Ctx
                 {
                     OnUpdate = _ctx.OnUpdate,
                     Data = _ctx.Data,
@@ -108,8 +106,8 @@ namespace Miner.Camera
             [SerializeField] private float _cameraSense;
             [SerializeField] private Vector3 _cameraOffset;
 
-            public float CameraSense => _cameraSense;
-            public Vector3 CameraOffset => _cameraOffset;
+            public readonly float CameraSense => _cameraSense;
+            public readonly Vector3 CameraOffset => _cameraOffset;
         }
     }
 }
