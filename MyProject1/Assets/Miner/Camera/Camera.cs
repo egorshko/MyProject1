@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Miner.Camera 
@@ -21,6 +22,7 @@ namespace Miner.Camera
 
                 private Ctx _ctx;
 
+                private int? _lastFingerId;
                 private float _zoomValue;
                 private Vector3 _startTargetPos;
                 private Vector3 _startInputPos;
@@ -54,7 +56,7 @@ namespace Miner.Camera
 
                 private Vector3 GetCameraOffset()
                 {
-                    _zoomValue += SimpleInput.GetAxis("Mouse ScrollWheel") * _ctx.Data.ZoomSense;
+                    _zoomValue += Input.GetAxis("Mouse ScrollWheel") * _ctx.Data.ZoomSense;
 
                     _zoomValue = Mathf.Clamp01(_zoomValue);
                     return Vector3.Lerp(_ctx.Data.CameraOffsetNear, _ctx.Data.CameraOffsetFar, _zoomValue);
@@ -62,16 +64,25 @@ namespace Miner.Camera
 
                 private void UpdateCameraTargetPos()
                 {
-                    if (Input.touchCount > 1) return;
+                    var touches = Input.touches;
+                    if (touches.Length != 1) return;
 
-                    var ray = _camera.ScreenPointToRay(Input.mousePosition);
-                    if (Input.GetMouseButtonDown(0) && RayCast(ray, out var startHit))
+                    Touch targetTouch = default;
+                    if (_lastFingerId.HasValue && touches.Any(t => t.fingerId == _lastFingerId.Value))
+                        targetTouch = touches.First(t => t.fingerId == _lastFingerId.Value);
+                    else
+                        targetTouch = touches.First();
+
+                    _lastFingerId = targetTouch.fingerId;
+
+                    var ray = _camera.ScreenPointToRay(targetTouch.position);
+                    if (targetTouch.phase == TouchPhase.Began && RayCast(ray, out var startHit))
                     { 
                         _startInputPos = startHit.point;
                         _startTargetPos = _cameraTarget.position;
                     }
 
-                    if (Input.GetMouseButton(0) && RayCast(ray, out var hit))
+                    if (targetTouch.phase == TouchPhase.Moved && RayCast(ray, out var hit))
                     { 
                         _cameraTarget.position = _startTargetPos - (hit.point - _startInputPos);
                         PlayerPrefs.SetFloat("CamTargetPosX", _cameraTarget.position.x);
