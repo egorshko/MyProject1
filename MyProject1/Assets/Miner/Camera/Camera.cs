@@ -67,12 +67,12 @@ namespace Miner.Camera
                 {
                     if (!Input.touchSupported || Input.touchCount != 2) return;
 
-                    var touch1 = Input.GetTouch(0);
-                    var touch2 = Input.GetTouch(1);
+                    var touch1 = Input.GetTouch(1);
+                    var touch2 = Input.GetTouch(2);
 
                     var pinchAmount = (touch2.deltaPosition - touch1.deltaPosition).magnitude;
                     var zoomingOut = (touch2.position - touch1.position).sqrMagnitude < ((touch2.position - touch2.deltaPosition) - (touch1.position - touch1.deltaPosition)).sqrMagnitude;
-                    if (!zoomingOut) pinchAmount = -pinchAmount;
+                    if (zoomingOut) pinchAmount = -pinchAmount;
                     _onPinch.Execute(pinchAmount * ResolutionMultiplier);
                 }
 
@@ -118,6 +118,7 @@ namespace Miner.Camera
                 {
                     _zoomValue += pinch * _ctx.Data.ZoomSense;
                     _zoomValue = Mathf.Clamp01(_zoomValue);
+                    Debug.Log($"{pinch} - {_zoomValue}");
                 }
 
                 private void UpdateCameraTargetPos((TouchPhase touchPhase, Vector3 pos) data)

@@ -2,6 +2,7 @@
     "name": "Miner",
     "rootNamespace": "",
     "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:c5c25fbf7939e5a4e8bba6f4f6d45750",
         "GUID:d6d0d18623e48284e85cbf3c539d7cbe",

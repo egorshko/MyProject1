@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.LowLevel;
 
@@ -81,6 +82,7 @@ namespace Miner
         }
 
         [SerializeField] private Data _data;
+        [SerializeField] private TMP_Text _consoleTextArea;
 
         private IReactiveCommand<float> _onUpdate;
 
@@ -95,6 +97,19 @@ namespace Miner
                 OnUpdate = _onUpdate,
                 Data = _data,
             }).AddTo(this);
+
+            Application.logMessageReceived += DrawLog;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            Application.logMessageReceived -= DrawLog;
+        }
+
+        private void DrawLog(string condition, string stackTrace, LogType type) 
+        {
+            _consoleTextArea.text += $"{condition}\n";
         }
 
         private void Update()
