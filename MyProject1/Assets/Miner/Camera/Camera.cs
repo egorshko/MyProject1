@@ -70,6 +70,8 @@ namespace Miner.Camera
                             if (touch.phase != TouchPhase.Began)
                                 continue;
 
+                            _onTap.Execute((touch.phase, touch.position));
+
                             _lastFirstTouch = touch;
                             return;
                         }
