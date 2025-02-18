@@ -1397,8 +1397,8 @@ MonoBehaviour:
       _spinnerView: {fileID: 1009486172}
       _rotateSpeed: 15
     _cameraData:
-      _cameraSense: 15
-      _zoomSense: 0.05
+      _cameraSense: 25
+      _zoomSense: 0.025
       _cameraOffsetFar: {x: 0, y: 10, z: -10}
       _cameraOffsetNear: {x: 0, y: 2, z: -2}
   _consoleTextArea: {fileID: 758903776}

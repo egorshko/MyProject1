@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
-using System.Net.NetworkInformation;
 using UnityEngine;
 
 namespace Miner.Camera 
@@ -31,6 +30,18 @@ namespace Miner.Camera
                 private Vector3 _startInputPos;
                 private readonly UnityEngine.Camera _camera;
                 private readonly Transform _cameraTarget;
+
+                private float _resolutionMultiplier;
+                private float ResolutionMultiplier
+                {
+                    get
+                    {
+                        if (_resolutionMultiplier <= 0f)
+                            _resolutionMultiplier = 100f / (Screen.width + Screen.height);
+
+                        return _resolutionMultiplier;
+                    }
+                }
 
                 public Logic(Ctx ctx)
                 {
@@ -121,7 +132,6 @@ namespace Miner.Camera
                 {
                     _zoomValue += pinch * _ctx.Data.ZoomSense;
                     _zoomValue = Mathf.Clamp01(_zoomValue);
-                    Debug.Log($"{_zoomValue} - {pinch}    ");
                 }
 
                 private void UpdateCameraTargetPos((TouchPhase touchPhase, Vector3 pos) data)
@@ -146,18 +156,6 @@ namespace Miner.Camera
                 }
 
                 private bool RayCast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Ground"));
-
-                private float _resolutionMultiplier;
-                private float ResolutionMultiplier
-                {
-                    get
-                    {
-                        if (_resolutionMultiplier <= 0f)
-                            _resolutionMultiplier = 100f / (Screen.width + Screen.height);
-
-                        return _resolutionMultiplier;
-                    }
-                }
 
                 protected override async UniTask OnAsyncDispose()
                 {
