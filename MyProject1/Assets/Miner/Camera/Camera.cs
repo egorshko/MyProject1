@@ -71,6 +71,8 @@ namespace Miner.Camera
                     var touch1 = Input.GetTouch(1);
                     var touch2 = Input.GetTouch(0);
 
+                    if (touch1.phase != TouchPhase.Moved || touch2.phase != TouchPhase.Moved) return;
+
                     var pinchAmount = (touch2.deltaPosition - touch1.deltaPosition).magnitude;
                     var zoomingOut = (touch2.position - touch1.position).sqrMagnitude < ((touch2.position - touch2.deltaPosition) - (touch1.position - touch1.deltaPosition)).sqrMagnitude;
                     if (zoomingOut) pinchAmount = -pinchAmount;
