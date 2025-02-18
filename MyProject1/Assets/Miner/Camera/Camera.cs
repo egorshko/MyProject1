@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Shared.Disposable;
 using Shared.Reactive;
 using System;
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 namespace Miner.Camera 
@@ -68,7 +69,7 @@ namespace Miner.Camera
                     if (!Input.touchSupported || Input.touchCount != 2) return;
 
                     var touch1 = Input.GetTouch(1);
-                    var touch2 = Input.GetTouch(2);
+                    var touch2 = Input.GetTouch(0);
 
                     var pinchAmount = (touch2.deltaPosition - touch1.deltaPosition).magnitude;
                     var zoomingOut = (touch2.position - touch1.position).sqrMagnitude < ((touch2.position - touch2.deltaPosition) - (touch1.position - touch1.deltaPosition)).sqrMagnitude;
