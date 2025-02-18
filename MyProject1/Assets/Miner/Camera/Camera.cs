@@ -23,6 +23,7 @@ namespace Miner.Camera
 
                 private Touch? _lastFirstTouch;
                 public IReactiveCommand<(TouchPhase touchPhase, Vector3 pos)> _onTouch;
+                public IReactiveCommand<float> _onPinch;
 
                 private float _zoomValue;
                 private Vector3 _startTargetPos;
@@ -36,6 +37,9 @@ namespace Miner.Camera
 
                     _onTouch = new ReactiveCommand<(TouchPhase touchPhase, Vector3 pos)>().AddTo(this);
                     _onTouch.Subscribe(UpdateCameraTargetPos).AddTo(this);
+
+                    _onPinch = new ReactiveCommand<float>().AddTo(this);
+                    _onPinch.Subscribe(UpdateCameraOffset).AddTo(this);
 
                     _camera = UnityEngine.Camera.allCameras[0];
                     _cameraTarget = new GameObject(nameof(_cameraTarget)).transform;
@@ -51,11 +55,25 @@ namespace Miner.Camera
                 private void OnUpdate(float deltaTime) 
                 {
                     UpdateTouch();
+                    UpdatePinch();
 
                     var sense = deltaTime * _ctx.Data.CameraSense;
 
-                    var targetPos = _cameraTarget.position + GetCameraOffset();
+                    var targetPos = _cameraTarget.position + Vector3.Lerp(_ctx.Data.CameraOffsetNear, _ctx.Data.CameraOffsetFar, _zoomValue);
                     _camera.transform.position = Vector3.Lerp(_camera.transform.position, targetPos, sense);
+                }
+
+                private void UpdatePinch()
+                {
+                    if (!Input.touchSupported || Input.touchCount != 2) return;
+
+                    var touch1 = Input.GetTouch(0);
+                    var touch2 = Input.GetTouch(1);
+
+                    var pinchAmount = (touch2.deltaPosition - touch1.deltaPosition).magnitude;
+                    var zoomingOut = (touch2.position - touch1.position).sqrMagnitude < ((touch2.position - touch2.deltaPosition) - (touch1.position - touch1.deltaPosition)).sqrMagnitude;
+                    if (!zoomingOut) pinchAmount = -pinchAmount;
+                    _onPinch.Execute(pinchAmount * ResolutionMultiplier);
                 }
 
                 private void UpdateTouch()
@@ -96,12 +114,10 @@ namespace Miner.Camera
                     }
                 }
 
-                private Vector3 GetCameraOffset()
+                private void UpdateCameraOffset(float pinch)
                 {
-                    _zoomValue += Input.GetAxis("Mouse ScrollWheel") * _ctx.Data.ZoomSense;
-
+                    _zoomValue += pinch * _ctx.Data.ZoomSense;
                     _zoomValue = Mathf.Clamp01(_zoomValue);
-                    return Vector3.Lerp(_ctx.Data.CameraOffsetNear, _ctx.Data.CameraOffsetFar, _zoomValue);
                 }
 
                 private void UpdateCameraTargetPos((TouchPhase touchPhase, Vector3 pos) data)
@@ -126,6 +142,18 @@ namespace Miner.Camera
                 }
 
                 private bool RayCast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Ground"));
+
+                private float _resolutionMultiplier;
+                private float ResolutionMultiplier
+                {
+                    get
+                    {
+                        if (_resolutionMultiplier <= 0f)
+                            _resolutionMultiplier = 100f / (Screen.width + Screen.height);
+
+                        return _resolutionMultiplier;
+                    }
+                }
 
                 protected override async UniTask OnAsyncDispose()
                 {
