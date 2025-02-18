@@ -117,9 +117,9 @@ namespace Miner.Camera
 
                 private void UpdateCameraOffset(float pinch)
                 {
-                    _zoomValue += pinch * _ctx.Data.ZoomSense;
+                    _zoomValue = pinch * _ctx.Data.ZoomSense;
                     _zoomValue = Mathf.Clamp01(_zoomValue);
-                    Debug.Log($"{pinch} - {_zoomValue}");
+                    //Debug.Log($"{pinch} - {_zoomValue}");
                 }
 
                 private void UpdateCameraTargetPos((TouchPhase touchPhase, Vector3 pos) data)
