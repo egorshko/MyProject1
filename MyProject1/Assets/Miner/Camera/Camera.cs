@@ -22,7 +22,9 @@ namespace Miner.Camera
 
                 private Ctx _ctx;
 
-                private int? _lastFingerId;
+                private Touch? _lastFirstTouch;
+                public IReactiveCommand<(TouchPhase touchPhase, Vector3 pos)> _onTap;
+
                 private float _zoomValue;
                 private Vector3 _startTargetPos;
                 private Vector3 _startInputPos;
@@ -32,6 +34,9 @@ namespace Miner.Camera
                 public Logic(Ctx ctx)
                 {
                     _ctx = ctx;
+
+                    _onTap = new ReactiveCommand<(TouchPhase touchPhase, Vector3 pos)>().AddTo(this);
+                    _onTap.Subscribe(UpdateCameraTargetPos).AddTo(this);
 
                     _camera = UnityEngine.Camera.allCameras[0];
                     _cameraTarget = new GameObject(nameof(_cameraTarget)).transform;
@@ -46,12 +51,44 @@ namespace Miner.Camera
 
                 private void OnUpdate(float deltaTime) 
                 {
-                    UpdateCameraTargetPos();
+                    UpdateTouches();
 
                     var sense = deltaTime * _ctx.Data.CameraSense;
 
                     var targetPos = _cameraTarget.position + GetCameraOffset();
                     _camera.transform.position = Vector3.Lerp(_camera.transform.position, targetPos, sense);
+                }
+
+                private void UpdateTouches()
+                {
+                    if (!Input.touchSupported) return;
+
+                    if (!_lastFirstTouch.HasValue) 
+                    {
+                        foreach (var touch in Input.touches)
+                        {
+                            if (touch.phase != TouchPhase.Began)
+                                continue;
+
+                            _lastFirstTouch = touch;
+                            return;
+                        }
+                    }
+                    else 
+                    {
+                        foreach (var touch in Input.touches)
+                        {
+                            if (touch.fingerId != _lastFirstTouch.Value.fingerId)
+                                continue;
+
+                            _onTap.Execute((touch.phase, touch.position));
+
+                            if (touch.phase == TouchPhase.Ended)
+                                _lastFirstTouch = null;
+
+                            return;
+                        }
+                    }
                 }
 
                 private Vector3 GetCameraOffset()
@@ -62,38 +99,27 @@ namespace Miner.Camera
                     return Vector3.Lerp(_ctx.Data.CameraOffsetNear, _ctx.Data.CameraOffsetFar, _zoomValue);
                 }
 
-                private void UpdateCameraTargetPos()
+                private void UpdateCameraTargetPos((TouchPhase touchPhase, Vector3 pos) data)
                 {
-                    var touches = Input.touches;
-                    if (touches.Length != 1) return;
-
-                    var targetTouch = touches.First();
-                    if (_lastFingerId.HasValue && touches.Any(t => t.fingerId == _lastFingerId.Value))
-                    { 
-                        targetTouch = touches.First(t => t.fingerId == _lastFingerId.Value); 
-                    }
-                    else if (RayCast(_camera.ScreenPointToRay(targetTouch.position), out var startHit))
+                    if (data.touchPhase == TouchPhase.Began && RayCast(_camera.ScreenPointToRay(data.pos), out var startHit))
                     {
                         _startInputPos = startHit.point;
                         _startTargetPos = _cameraTarget.position;
+                    }
+                    else if (data.touchPhase == TouchPhase.Moved && RayCast(_camera.ScreenPointToRay(data.pos), out var hit))
+                    {
+                        _cameraTarget.position = _startTargetPos - (hit.point - _startInputPos);
+                        var cameraTargetPos = _cameraTarget.position;
+                        cameraTargetPos.y = 0f;
+                        _cameraTarget.position = cameraTargetPos;
+
+                        PlayerPrefs.SetFloat("CamTargetPosX", _cameraTarget.position.x);
+                        PlayerPrefs.SetFloat("CamTargetPosZ", _cameraTarget.position.z);
                     }
                     else 
                     {
                         return;
                     }
-
-                    _lastFingerId = targetTouch.fingerId;
-
-                    if (targetTouch.phase == TouchPhase.Moved && RayCast(_camera.ScreenPointToRay(targetTouch.position), out var hit))
-                    { 
-                        _cameraTarget.position = _startTargetPos - (hit.point - _startInputPos);
-                        PlayerPrefs.SetFloat("CamTargetPosX", _cameraTarget.position.x);
-                        PlayerPrefs.SetFloat("CamTargetPosZ", _cameraTarget.position.z);
-                    }
-
-                    var cameraTargetPos = _cameraTarget.position;
-                    cameraTargetPos.y = 0f;
-                    _cameraTarget.position = cameraTargetPos;
                 }
 
                 private bool RayCast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Ground"));
