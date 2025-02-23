@@ -4,6 +4,7 @@ using Shared.Reactive;
 using System;
 using UnityEngine;
 using UnityEngine.LowLevel;
+using UnityEngine.Networking;
 
 namespace Books
 {
@@ -58,7 +59,17 @@ namespace Books
             {
                 _loadingScreen.ShowImmediate();
 
-                //loading here...
+                using (var request = UnityWebRequest.Get("https://misterpureshechka.github.io/MyProject1/Books/story.json")) 
+                {
+                    request.SetRequestHeader("Access-Control-Allow-Credentials", "true");
+                    request.SetRequestHeader("Access-Control-Allow-Headers", "Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time");
+                    request.SetRequestHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+                    request.SetRequestHeader("Access-Control-Allow-Origin", "*");
+
+                    await request.SendWebRequest();
+
+                    Debug.Log(request.downloadHandler.text);
+                }
 
                 await _loadingScreen.Hide();
             }
