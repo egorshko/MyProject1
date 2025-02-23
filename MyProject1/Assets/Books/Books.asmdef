@@ -1,0 +1,19 @@
+{
+    "name": "Books",
+    "rootNamespace": "",
+    "references": [
+        "GUID:58bed0e7c5306824586d7eda03609289",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:c5c25fbf7939e5a4e8bba6f4f6d45750",
+        "GUID:c9bf48a99ec832648b7b4296f6dd4c22"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
