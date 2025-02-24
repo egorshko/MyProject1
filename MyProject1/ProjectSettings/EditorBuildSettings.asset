@@ -20,10 +20,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Game/World/World_Test_1.unity
     guid: 5c0e56dacaa9f3e42ab44a0446096db3
-  - enabled: 0
+  - enabled: 1
     path: Assets/Miner/Miner.unity
     guid: 843a2b9520028844484fa0a537346725
-  - enabled: 1
+  - enabled: 0
     path: Assets/Books/Books.unity
     guid: 3af54616e0fae9a4ea70c0d1bf4ff974
   m_configObjects:
