@@ -1302,10 +1302,10 @@ MonoBehaviour:
       _spinnerView: {fileID: 1009486172}
       _rotateSpeed: 15
     _cameraData:
-      _cameraSense: 50
+      _cameraSense: 0.2
       _zoomSense: 0.05
-      _cameraOffsetFar: {x: 0, y: 50, z: -50}
-      _cameraOffsetNear: {x: 0, y: 30, z: -30}
+      _cameraOffsetFar: {x: 0, y: 100, z: -10}
+      _cameraOffsetNear: {x: 0, y: 50, z: -10}
     _depositData:
       _storageView: {fileID: 530001486}
       _storageCheckRadius: 20

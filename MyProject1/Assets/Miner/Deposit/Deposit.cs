@@ -21,6 +21,7 @@ namespace Miner.Deposit
                     private float _checkRadius;
 
                     public bool ToStorage { get; set; }
+
                     public NavMeshAgent ShipNavAgent => _shipNavAgent;
                     public Vector3 DepositPoint => _depositPoint;
 
@@ -35,6 +36,16 @@ namespace Miner.Deposit
 
                     public bool CheckDistance(Vector3 targetPoint)
                         => Vector3.Distance(_shipNavAgent.transform.position, targetPoint) <= _checkRadius;
+
+                    public void AddResources()
+                    {
+
+                    }
+
+                    public void RemoveResources()
+                    {
+                        
+                    }
                 }
 
                 public struct Ctx

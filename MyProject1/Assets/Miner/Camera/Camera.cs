@@ -22,14 +22,13 @@ namespace Miner.Camera
                 private Ctx _ctx;
 
                 private Touch? _lastFirstTouch;
-                public IReactiveCommand<(TouchPhase touchPhase, Vector3 pos)> _onTouch;
+                public IReactiveCommand<(TouchPhase touchPhase, Vector3 pos, Vector3 deltaPos)> _onTouch;
                 public IReactiveCommand<float> _onPinch;
 
                 private float _zoomValue;
-                private Vector3 _startTargetPos;
-                private Vector3 _startInputPos;
                 private readonly UnityEngine.Camera _camera;
                 private readonly Transform _cameraTarget;
+                private readonly Transform _cameraLafet;
 
                 private float _resolutionMultiplier;
                 private float ResolutionMultiplier
@@ -47,7 +46,7 @@ namespace Miner.Camera
                 {
                     _ctx = ctx;
 
-                    _onTouch = new ReactiveCommand<(TouchPhase touchPhase, Vector3 pos)>().AddTo(this);
+                    _onTouch = new ReactiveCommand<(TouchPhase touchPhase, Vector3 pos, Vector3 deltaPos)>().AddTo(this);
                     _onTouch.Subscribe(UpdateCameraTargetPos).AddTo(this);
 
                     _onPinch = new ReactiveCommand<float>().AddTo(this);
@@ -55,10 +54,15 @@ namespace Miner.Camera
 
                     _camera = UnityEngine.Camera.allCameras[0];
                     _cameraTarget = new GameObject(nameof(_cameraTarget)).transform;
+                    _cameraLafet = new GameObject(nameof(_cameraLafet)).transform;
+                    _cameraLafet.SetParent(_cameraTarget);
+                    _cameraLafet.localPosition = _ctx.Data.CameraOffsetFar;
+                    _camera.transform.SetParent(_cameraLafet);
+                    _camera.transform.localPosition = Vector3.zero;
 
                     var cameraTargetPos = _cameraTarget.position;
-                    cameraTargetPos.x = PlayerPrefs.GetFloat("CamTargetPosX", 0f);
-                    cameraTargetPos.z = PlayerPrefs.GetFloat("CamTargetPosZ", 0f);
+                    //cameraTargetPos.x = PlayerPrefs.GetFloat("CamTargetPosX", 0f);
+                    //cameraTargetPos.z = PlayerPrefs.GetFloat("CamTargetPosZ", 0f);
                     _cameraTarget.position = cameraTargetPos;
 
                     _ctx.OnUpdate.Subscribe(OnUpdate).AddTo(this);
@@ -77,10 +81,12 @@ namespace Miner.Camera
                         UpdateScroll();
                     }
 
-                    var sense = deltaTime * _ctx.Data.CameraSense;
+                    _camera.transform.LookAt(_cameraTarget);
 
-                    var targetPos = _cameraTarget.position + Vector3.Lerp(_ctx.Data.CameraOffsetNear, _ctx.Data.CameraOffsetFar, _zoomValue);
-                    _camera.transform.position = Vector3.Lerp(_camera.transform.position, targetPos, sense);
+                    //var sense = deltaTime * _ctx.Data.CameraSense;
+
+                    //var targetPos = _cameraTarget.position + Vector3.Lerp(_ctx.Data.CameraOffsetNear, _ctx.Data.CameraOffsetFar, _zoomValue);
+                    _cameraLafet.localPosition = Vector3.Lerp(_ctx.Data.CameraOffsetNear, _ctx.Data.CameraOffsetFar, _zoomValue);
                 }
 
                 private void UpdatePinch()
@@ -113,7 +119,7 @@ namespace Miner.Camera
                             if (touch.phase != TouchPhase.Began)
                                 continue;
 
-                            _onTouch.Execute((touch.phase, touch.position));
+                            _onTouch.Execute((touch.phase, touch.position, touch.deltaPosition));
 
                             _lastFirstTouch = touch;
                             return;
@@ -126,7 +132,7 @@ namespace Miner.Camera
                             if (touch.fingerId != _lastFirstTouch.Value.fingerId)
                                 continue;
 
-                            _onTouch.Execute((touch.phase, touch.position));
+                            _onTouch.Execute((touch.phase, touch.position, touch.deltaPosition));
 
                             if (touch.phase == TouchPhase.Ended)
                                 _lastFirstTouch = null;
@@ -145,15 +151,11 @@ namespace Miner.Camera
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                        _onTouch.Execute((TouchPhase.Began, Input.mousePosition));
-                    }
-                    else if (Input.GetMouseButtonUp(0))
-                    {
-                        _onTouch.Execute((TouchPhase.Ended, Input.mousePosition));
+                        _onTouch.Execute((TouchPhase.Began, Input.mousePosition, Input.mousePositionDelta));
                     }
                     else if (Input.GetMouseButton(0))
                     {
-                        _onTouch.Execute((TouchPhase.Moved, Input.mousePosition));
+                        _onTouch.Execute((TouchPhase.Moved, Input.mousePosition, Input.mousePositionDelta));
                     }
                 }
 
@@ -163,28 +165,17 @@ namespace Miner.Camera
                     _zoomValue = Mathf.Clamp01(_zoomValue);
                 }
 
-                private void UpdateCameraTargetPos((TouchPhase touchPhase, Vector3 pos) data)
+                private void UpdateCameraTargetPos((TouchPhase touchPhase, Vector3 pos, Vector3 deltaPos) data)
                 {
-                    if (!RayCast(_camera.ScreenPointToRay(data.pos), out var hit)) return;
-
-                    if (data.touchPhase == TouchPhase.Began)
-                    {
-                        _startInputPos = hit.point;
-                        _startTargetPos = _cameraTarget.position;
-                    }
-                    else if (data.touchPhase == TouchPhase.Moved)
-                    {
-                        _cameraTarget.position = _startTargetPos - (hit.point - _startInputPos);
-                        var cameraTargetPos = _cameraTarget.position;
-                        cameraTargetPos.y = 0f;
-                        _cameraTarget.position = cameraTargetPos;
-
-                        PlayerPrefs.SetFloat("CamTargetPosX", _cameraTarget.position.x);
-                        PlayerPrefs.SetFloat("CamTargetPosZ", _cameraTarget.position.z);
-                    }
+                    _cameraTarget.position -= _cameraTarget.TransformDirection(new Vector3(data.deltaPos.x, 0f, data.deltaPos.y) * _ctx.Data.CameraSense);
+                    
+                    //_cameraTarget.position += _cameraTarget.forward * data.deltaPos.y * _ctx.Data.CameraSense;
+                    //_cameraTarget.right -= Vector3.right * data.deltaPos.x * _ctx.Data.CameraSense;
+                    //PlayerPrefs.SetFloat("CamTargetPosX", _cameraTarget.position.x);
+                    //PlayerPrefs.SetFloat("CamTargetPosZ", _cameraTarget.position.z);
                 }
 
-                private bool RayCast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Ground"));
+                private bool RayCast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, 1000f, LayerMask.GetMask("Ground"));
 
                 protected override async UniTask OnAsyncDispose()
                 {
