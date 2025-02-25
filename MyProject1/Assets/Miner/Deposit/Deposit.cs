@@ -14,6 +14,29 @@ namespace Miner.Deposit
         {
             private class Logic : BaseDisposable
             {
+                private class DepositState
+                {
+                    private NavMeshAgent _shipNavAgent;
+                    private Vector3 _depositPoint;
+                    private float _checkRadius;
+
+                    public bool ToStorage { get; set; }
+                    public NavMeshAgent ShipNavAgent => _shipNavAgent;
+                    public Vector3 DepositPoint => _depositPoint;
+
+                    public DepositState(Data.Source source)
+                    {
+                        _shipNavAgent = source.ShipView.GetComponent<NavMeshAgent>();
+                        _depositPoint = source.DepositeView.transform.position;
+                        _checkRadius = source.CheckRadius;
+
+                        ToStorage = false;
+                    }
+
+                    public bool CheckDistance(Vector3 targetPoint)
+                        => Vector3.Distance(_shipNavAgent.transform.position, targetPoint) <= _checkRadius;
+                }
+
                 public struct Ctx
                 {
                     public IReadOnlyReactiveCommand<float> OnUpdate;
@@ -23,8 +46,7 @@ namespace Miner.Deposit
 
                 private Ctx _ctx;
 
-                private Dictionary<string, (NavMeshAgent shipNavAgent, Vector3 depositPoint, float checkDepositRadius)> _deposits;
-                private Dictionary<string, bool> _shipsStates;
+                private Dictionary<string, DepositState> _depositStates;
 
                 public Logic(Ctx ctx)
                 {
@@ -32,24 +54,16 @@ namespace Miner.Deposit
 
                     UpdateDeposits();
 
-                    var dirtyIds = new List<string>();
-
                     _ctx.OnUpdate.Subscribe(updateTime =>
                     {
-                        dirtyIds.Clear();
-                        foreach (var ship in _shipsStates)
+                        foreach (var deposit in _depositStates)
                         {
-                            var target = ship.Value ? _ctx.Data.StorageView.transform.position : _deposits[ship.Key].depositPoint;
+                            var target = deposit.Value.ToStorage ? _ctx.Data.StorageView.transform.position : deposit.Value.DepositPoint;
 
-                            _deposits[ship.Key].shipNavAgent.SetDestination(target);
-                            _deposits[ship.Key].shipNavAgent.isStopped = false;
-
-                            if (Vector3.Distance(_deposits[ship.Key].shipNavAgent.transform.position, target) <= _ctx.Data.StorageCheckRadius)
-                                dirtyIds.Add(ship.Key);
-                        }
-                        foreach (var dirtyId in dirtyIds) 
-                        {
-                            _shipsStates[dirtyId] = !_shipsStates[dirtyId];
+                            deposit.Value.ShipNavAgent.SetDestination(target);
+                            deposit.Value.ShipNavAgent.isStopped = false;
+                            if (deposit.Value.CheckDistance(target))
+                                deposit.Value.ToStorage = !deposit.Value.ToStorage;
                         }
                     }).AddTo(this);
                 }
@@ -60,17 +74,14 @@ namespace Miner.Deposit
 
                     if (id == null) 
                     {
-                        _deposits = new();
-                        _shipsStates = new();
+                        _depositStates = new();
                     }
                     
                     foreach (var source in _ctx.Data.Sources)
                     {
                         if (id != null && source.Id != id) continue;
 
-                        var shipNavAgent = source.ShipView.GetComponent<NavMeshAgent>();
-                        _deposits[source.Id] = (shipNavAgent, source.DepositeView.transform.position, source.CheckRadius);
-                        _shipsStates[source.Id] = false;
+                        _depositStates[source.Id] = new DepositState(source);
                     }
                 }
             }
