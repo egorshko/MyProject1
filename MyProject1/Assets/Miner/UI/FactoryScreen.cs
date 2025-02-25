@@ -30,14 +30,15 @@ namespace Miner.UI
             if (Application.isPlaying && !Input.GetMouseButton(0)) 
             {
                 var targetPos = _verticalScrollRect.content.position;
-                var nearestY = float.MaxValue;
+                var nearestY = float.MinValue;
                 for (var i = 0; i < _verticalScrollRect.content.transform.childCount; i++)
                 {
                     var childTransform = _verticalScrollRect.content.transform.GetChild(i);
-                    if (childTransform.position.y >= nearestY) continue;
-
-                    nearestY = childTransform.position.y;
-                    targetPos.y = nearestY;
+                    var deltaPosY = childTransform.position.y - _verticalScrollRect.viewport.transform.position.y;
+                    if (deltaPosY < nearestY) continue;
+                    Debug.Log(deltaPosY);
+                    nearestY = deltaPosY;
+                    targetPos.y = _verticalScrollRect.content.position.y - deltaPosY;
                 }
                 _verticalScrollRect.content.position = Vector3.Lerp(_verticalScrollRect.content.position, targetPos, Time.deltaTime * 5f);
             }
