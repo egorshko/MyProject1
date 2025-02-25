@@ -72,7 +72,8 @@ namespace Miner.Camera
                 {
                     if (Input.touchSupported)
                     {
-                        UpdateTouch();
+                        //UpdateTouch();
+                        UpdateClick();
                         UpdatePinch();
                     }
                     else
