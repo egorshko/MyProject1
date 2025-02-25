@@ -66,8 +66,16 @@ namespace Miner.Camera
 
                 private void OnUpdate(float deltaTime) 
                 {
-                    UpdateTouch();
-                    UpdatePinch();
+                    if (Input.touchSupported)
+                    {
+                        UpdateTouch();
+                        UpdatePinch();
+                    }
+                    else
+                    {
+                        UpdateClick();
+                        UpdateScroll();
+                    }
 
                     var sense = deltaTime * _ctx.Data.CameraSense;
 
@@ -77,7 +85,7 @@ namespace Miner.Camera
 
                 private void UpdatePinch()
                 {
-                    if (!Input.touchSupported || Input.touchCount != 2) return;
+                    if (Input.touchCount != 2) return;
 
                     var touch1 = Input.GetTouch(1);
                     var touch2 = Input.GetTouch(0);
@@ -92,7 +100,7 @@ namespace Miner.Camera
 
                 private void UpdateTouch()
                 {
-                    if (!Input.touchSupported || Input.touchCount > 1) 
+                    if (Input.touchCount > 1) 
                     {
                         _lastFirstTouch = null;
                         return; 
@@ -125,6 +133,27 @@ namespace Miner.Camera
 
                             return;
                         }
+                    }
+                }
+
+                private void UpdateScroll()
+                {
+                    _onPinch.Execute(Input.GetAxis("Mouse ScrollWheel"));
+                }
+
+                private void UpdateClick()
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        _onTouch.Execute((TouchPhase.Began, Input.mousePosition));
+                    }
+                    else if (Input.GetMouseButtonUp(0))
+                    {
+                        _onTouch.Execute((TouchPhase.Ended, Input.mousePosition));
+                    }
+                    else if (Input.GetMouseButton(0))
+                    {
+                        _onTouch.Execute((TouchPhase.Moved, Input.mousePosition));
                     }
                 }
 
